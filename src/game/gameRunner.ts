@@ -78,7 +78,7 @@ var tileHeightHalf;
 
 var d = 0;
 
-var scene;
+let scene: Phaser.Scene;
 
 class Skeleton extends Phaser.GameObjects.Image {
 
@@ -332,8 +332,8 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
 
     parent: "game-container",
-    width: 800,
-    height: 600,
+    width: 1600,
+    height: 1200,
 
     /*
     physics: {
@@ -357,19 +357,36 @@ function preload() {
     this.load.spritesheet('tiles', 'assets/tests/iso/isometric-grass-and-water.png', { frameWidth: 64, frameHeight: 64 });
     this.load.spritesheet('skeleton', 'assets/tests/iso/skeleton8.png', { frameWidth: 128, frameHeight: 128 });
     this.load.image('house', 'assets/tests/iso/rem_0002.png');
+    this.load.image('water', 'assets/water.png');
     this.load.spritesheet('duck', 'assets/duck-white-spritesheet.png', { frameWidth: 128, frameHeight: 128 });
+
+    this.load.image('bread', 'assets/bread_NW.png');
 }
 
 function create() {
     scene = this;
     cursors = scene.input.keyboard.createCursorKeys();
 
+    this.input.setDefaultCursor('url(assets/bread_cursor.png), pointer');
+    this.input.on('pointerdown', function (pointer: Phaser.Input.Pointer) {
+
+        const x = pointer.x + scene.cameras.main.scrollX;
+        const y = pointer.y + scene.cameras.main.scrollY + 40;
+
+        const bread = scene.add.image(x, y, 'bread');
+        bread.scale = 0.2;
+
+        //const bread = scene.add.image(600, 200, 'bread');
+        bread.depth = 900;
+
+    }, this);
+
     //  Our Skeleton class
 
 
-
-    buildMap();
-    placeHouses();
+    buildWater();
+    //buildMap();
+    //placeHouses();
 
     /*
     skeletons.push(this.add.existing(new Skeleton(this, 240, 290, 'walk', 'southEast', 100)));
@@ -410,7 +427,7 @@ function create() {
     entities.push(this.add.existing(new Duck(this, 1500, 340, 'walk', 'southWest', 340)));
     entities.push(this.add.existing(new Duck(this, 1550, 360, 'walk', 'southWest', 330)));
 
-    this.cameras.main.setSize(1600, 600);
+    this.cameras.main.setSize(1600, 1200);
 
     // this.cameras.main.scrollX = 800;
 }
@@ -436,6 +453,42 @@ function update() {
 
         if (this.cameras.main.scrollX >= 800) {
             d = 1;
+        }
+    }
+}
+
+function buildWater() {
+    //  Parse the data out of the map
+    var data = scene.cache.json.get('map');
+
+    var tilewidth = data.tilewidth;
+    var tileheight = data.tileheight;
+
+    tileWidthHalf = tilewidth / 2;
+    tileHeightHalf = tileheight / 2;
+
+    var layer = data.layers[0].data;
+
+    var mapwidth = data.layers[0].width;
+    var mapheight = data.layers[0].height;
+
+    var centerX = mapwidth * tileWidthHalf;
+    var centerY = 16;
+
+    var i = 0;
+
+    for (var y = 0; y < mapheight; y++) {
+        for (var x = 0; x < mapwidth; x++) {
+            const id = layer[i] - 1;
+
+            var tx = (x - y) * tileWidthHalf;
+            var ty = (x + y) * tileHeightHalf;
+
+            var tile = scene.add.image(centerX + tx, centerY + ty, 'water');
+
+            tile.depth = centerY + ty;
+            console.log(tile.depth);
+            i++;
         }
     }
 }
