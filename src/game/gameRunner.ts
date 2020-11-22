@@ -1,5 +1,4 @@
 import * as Phaser from 'phaser';
-import logoImg from "../assets/logo.png";
 
 var directions = {
     west: { offset: 0, x: -2, y: 0, opposite: 'east' },
@@ -11,7 +10,6 @@ var directions = {
     south: { offset: 192, x: 0, y: 2, opposite: 'north' },
     southWest: { offset: 224, x: -2, y: 1, opposite: 'northEast' }
 };
-
 
 var anims = {
     idle: {
@@ -40,6 +38,36 @@ var anims = {
         speed: 0.1
     }
 };
+
+var duckAnims = {
+    idle: {
+        startFrame: 0,
+        endFrame: 4,
+        speed: 0.2
+    },
+    walk: {
+        startFrame:0,
+        endFrame: 8,
+        speed: 0.45
+    },
+    attack: {
+        startFrame: 12,
+        endFrame: 20,
+        speed: 0.11
+    },
+    die: {
+        startFrame: 20,
+        endFrame: 28,
+        speed: 0.2
+    },
+    shoot: {
+        startFrame: 28,
+        endFrame: 32,
+        speed: 0.1
+    }
+};
+
+let cursors;
 
 var skeletons = [];
 
@@ -192,9 +220,9 @@ class Duck extends Phaser.GameObjects.Image {
         this.distance = distance;
 
         this.motion = motion;
-        this.anim = anims[motion];
+        this.anim = duckAnims[motion];
         this.direction = directions[direction];
-        this.speed = 0.15;
+        this.speed = this.anim.speed;
         this.f = this.anim.startFrame;
 
         //Phaser.GameObjects.Image.call(this, scene, x, y, 'skeleton', this.direction.offset + this.f);
@@ -206,7 +234,7 @@ class Duck extends Phaser.GameObjects.Image {
     };
 
     changeFrame() {
-        this.f++;
+        //this.f++;
 
         var delay = this.anim.speed;
 
@@ -250,6 +278,18 @@ class Duck extends Phaser.GameObjects.Image {
     }
 
     update() {
+        if (cursors.left.isDown) {
+            this.direction = directions['west'];
+        } else if (cursors.up.isDown) {
+            this.direction = directions['north'];
+        } else if (cursors.right.isDown) {
+            this.direction = directions['east'];
+        } else if (cursors.down.isDown) {
+            this.direction = directions['south'];
+        } else {
+            // stop, somehow
+        }
+
         if (this.motion === 'walk') {
             this.x += this.direction.x * this.speed;
 
@@ -257,15 +297,7 @@ class Duck extends Phaser.GameObjects.Image {
                 this.y += this.direction.y * this.speed;
                 this.depth = this.y + 64;
             }
-
-            //  Walked far enough?
-            if (Phaser.Math.Distance.Between(this.startX, this.startY, this.x, this.y) >= this.distance) {
-                this.direction = directions[this.direction.opposite];
-                this.f = this.anim.startFrame;
-                this.frame = this.texture.get(this.direction.offset + this.f);
-                this.startX = this.x;
-                this.startY = this.y;
-            }
+            this.frame = this.texture.get(this.direction.offset + this.f);
         }
     }
 
@@ -302,11 +334,12 @@ function preload() {
     this.load.spritesheet('tiles', 'assets/tests/iso/isometric-grass-and-water.png', { frameWidth: 64, frameHeight: 64 });
     this.load.spritesheet('skeleton', 'assets/tests/iso/skeleton8.png', { frameWidth: 128, frameHeight: 128 });
     this.load.image('house', 'assets/tests/iso/rem_0002.png');
-    this.load.image('duck', 'assets/duck-white.png');
+    this.load.spritesheet('duck', 'assets/duck-white-spritesheet.png', { frameWidth: 128, frameHeight: 128 });
 }
 
 function create() {
     scene = this;
+    cursors = scene.input.keyboard.createCursorKeys();
 
     //  Our Skeleton class
 
