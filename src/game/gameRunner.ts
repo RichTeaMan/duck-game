@@ -46,7 +46,7 @@ var duckAnims = {
         speed: 0.2
     },
     walk: {
-        startFrame:0,
+        startFrame: 0,
         endFrame: 8,
         speed: 0.45
     },
@@ -69,7 +69,7 @@ var duckAnims = {
 
 let cursors;
 
-var skeletons = [];
+var entities = [];
 
 var duck;
 
@@ -212,6 +212,8 @@ class Duck extends Phaser.GameObjects.Image {
 
     depth: number;
 
+    playerControlled = false;
+
     constructor(scene, x, y, motion, direction, distance) {
         super(scene, x, y, 'duck')//, direction.offset + anims[motion].startFrame)
 
@@ -278,26 +280,47 @@ class Duck extends Phaser.GameObjects.Image {
     }
 
     update() {
-        if (cursors.left.isDown) {
-            this.direction = directions['west'];
-        } else if (cursors.up.isDown) {
-            this.direction = directions['north'];
-        } else if (cursors.right.isDown) {
-            this.direction = directions['east'];
-        } else if (cursors.down.isDown) {
-            this.direction = directions['south'];
-        } else {
-            // stop, somehow
-        }
-
-        if (this.motion === 'walk') {
-            this.x += this.direction.x * this.speed;
-
-            if (this.direction.y !== 0) {
-                this.y += this.direction.y * this.speed;
-                this.depth = this.y + 64;
+        if (this.playerControlled) {
+            if (cursors.left.isDown) {
+                this.direction = directions['west'];
+            } else if (cursors.up.isDown) {
+                this.direction = directions['north'];
+            } else if (cursors.right.isDown) {
+                this.direction = directions['east'];
+            } else if (cursors.down.isDown) {
+                this.direction = directions['south'];
+            } else {
+                // stop, somehow
             }
-            this.frame = this.texture.get(this.direction.offset + this.f);
+
+            if (this.motion === 'walk') {
+                this.x += this.direction.x * this.speed;
+
+                if (this.direction.y !== 0) {
+                    this.y += this.direction.y * this.speed;
+                    this.depth = this.y + 64;
+                }
+                this.frame = this.texture.get(this.direction.offset + this.f);
+            }
+        }
+        else {
+            if (this.motion === 'walk') {
+                this.x += this.direction.x * this.speed;
+
+                if (this.direction.y !== 0) {
+                    this.y += this.direction.y * this.speed;
+                    this.depth = this.y + 64;
+                }
+
+                //  Walked far enough?
+                if (Phaser.Math.Distance.Between(this.startX, this.startY, this.x, this.y) >= this.distance) {
+                    this.direction = directions[this.direction.opposite];
+                    this.f = this.anim.startFrame;
+                    this.frame = this.texture.get(this.direction.offset + this.f);
+                    this.startX = this.x;
+                    this.startY = this.y;
+                }
+            }
         }
     }
 
@@ -330,7 +353,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
 };
 
 function preload() {
-    this.load.json('map', 'assets/tests/iso/isometric-grass-and-water.json');
+    this.load.json('map', 'assets/tests/iso/isometric-water.json');
     this.load.spritesheet('tiles', 'assets/tests/iso/isometric-grass-and-water.png', { frameWidth: 64, frameHeight: 64 });
     this.load.spritesheet('skeleton', 'assets/tests/iso/skeleton8.png', { frameWidth: 128, frameHeight: 128 });
     this.load.image('house', 'assets/tests/iso/rem_0002.png');
@@ -348,6 +371,7 @@ function create() {
     buildMap();
     placeHouses();
 
+    /*
     skeletons.push(this.add.existing(new Skeleton(this, 240, 290, 'walk', 'southEast', 100)));
     skeletons.push(this.add.existing(new Skeleton(this, 100, 380, 'walk', 'southEast', 230)));
     skeletons.push(this.add.existing(new Skeleton(this, 620, 140, 'walk', 'south', 380)));
@@ -367,8 +391,24 @@ function create() {
     skeletons.push(this.add.existing(new Skeleton(this, 1450, 320, 'walk', 'southWest', 320)));
     skeletons.push(this.add.existing(new Skeleton(this, 1500, 340, 'walk', 'southWest', 340)));
     skeletons.push(this.add.existing(new Skeleton(this, 1550, 360, 'walk', 'southWest', 330)));
+*/
 
     duck = this.add.existing(new Duck(this, 600, 200, 'walk', 'east', 100));
+    duck.playerControlled = true;
+
+    entities.push(this.add.existing(new Duck(this, 240, 290, 'walk', 'southEast', 100)));
+    entities.push(this.add.existing(new Duck(this, 100, 380, 'walk', 'southEast', 230)));
+    entities.push(this.add.existing(new Duck(this, 620, 140, 'walk', 'south', 380)));
+    entities.push(this.add.existing(new Duck(this, 460, 180, 'walk', 'south', 150)));
+    entities.push(this.add.existing(new Duck(this, 760, 100, 'walk', 'southEast', 670)));
+    entities.push(this.add.existing(new Duck(this, 800, 140, 'walk', 'northWest', 800)));
+    entities.push(this.add.existing(new Duck(this, 750, 480, 'walk', 'east', 200)));
+    entities.push(this.add.existing(new Duck(this, 1030, 300, 'walk', 'west', 100)));
+    entities.push(this.add.existing(new Duck(this, 1180, 340, 'walk', 'northEast', 420)));
+    entities.push(this.add.existing(new Duck(this, 1180, 180, 'walk', 'southEast', 160)));
+    entities.push(this.add.existing(new Duck(this, 1450, 320, 'walk', 'southWest', 320)));
+    entities.push(this.add.existing(new Duck(this, 1500, 340, 'walk', 'southWest', 340)));
+    entities.push(this.add.existing(new Duck(this, 1550, 360, 'walk', 'southWest', 330)));
 
     this.cameras.main.setSize(1600, 600);
 
@@ -376,7 +416,7 @@ function create() {
 }
 
 function update() {
-    skeletons.forEach(function (skeleton) {
+    entities.forEach(function (skeleton) {
         skeleton.update();
     });
 

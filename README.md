@@ -42,7 +42,7 @@ Instead, it will copy all the configuration files and the transitive dependencie
 You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
 
-## Installing Pillow for redner script
+## Installing Pillow for render script
 
 Navigate to installed Blender directory, then into the python/bin directory:
 
@@ -50,4 +50,10 @@ Navigate to installed Blender directory, then into the python/bin directory:
 ./python.exe pip
 ./python.exe ../lib/ensurepip
 ./python.exe ../lib/site-packages/pip install pillow --user
+```
+
+## Running render script
+
+```bash
+blender -b duck-white.blend -P render.py
 ```

@@ -32,7 +32,7 @@ def render_direction(direction_name, camera_x, camera_y):
 
     # create the first camera object
     cam_obj = bpy.data.objects.new(f"CameraObj-{direction_name}", cam)
-    cam_obj.location = (camera_x, camera_y, 0.6)
+    cam_obj.location = (camera_x, camera_y, 0.8)
     cam_obj.rotation_euler = (0, 0, 0)
     scn.collection.objects.link(cam_obj)
 
