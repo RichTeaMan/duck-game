@@ -15,10 +15,10 @@ const duckAnims = {
         endFrame: 4,
         speed: 0.45
     },
-    attack: {
-        startFrame: 12,
-        endFrame: 20,
-        speed: 0.11
+    feed: {
+        startFrame: 5,
+        endFrame: 7,
+        speed: 0.8
     },
     die: {
         startFrame: 20,
@@ -54,6 +54,8 @@ export class Duck extends Entity {
 
     animationStep = 1;
 
+    active = true;
+
     constructor(gameState: GameState, x: number, y: number, motion, direction: Direction, distance, duckType = 'duck') {
         super(gameState, duckType, x, y)//, direction.offset + anims[motion].startFrame)
 
@@ -74,26 +76,39 @@ export class Duck extends Entity {
         return EntityType.Duck;
     }
 
+    startWalkAnimation() {
+        this.f = duckAnims['walk'].startFrame;
+        this.anim = duckAnims['walk'];
+        this.animationStep = 1;
+        this.motion = 'walk';
+        this.changeFrame();
+        this.active = true;
+    }
+
+    startFeedAnimation() {
+        this.f = duckAnims['feed'].startFrame;
+        this.anim = duckAnims['feed'];
+        this.animationStep = 1;
+        this.motion = 'feed';
+        this.changeFrame();
+        this.active = false;
+    }
+
     changeFrame() {
-        this.f += this.animationStep;
 
-        console.log(`${this.motion}/${this.animationStep} - ${this.f}`)
-
-        var delay = this.anim.speed;
+        let delay = this.anim.speed;
         this.image.depth = this.y + 64;
 
-        if (this.f === this.anim.endFrame || this.f === 0) {
+        if (this.f > this.anim.endFrame || this.f < 0) {
             switch (this.motion) {
                 case 'walk':
                     this.animationStep = -this.animationStep;
-                    this.image.frame = this.image.texture.get(this.direction.offset + this.f);
-                    this.gameState.scene.time.delayedCall(delay * 1000, this.changeFrame, [], this);
+                    this.f += 2 * this.animationStep;
                     break;
 
-                case 'attack':
-                    delay = Math.random() * 2;
-                    this.gameState.scene.time.delayedCall(delay * 1000, this.resetAnimation, [], this);
-                    break;
+                case 'feed':
+                    this.gameState.scene.time.delayedCall(delay * 1000, this.startWalkAnimation, [], this);
+                    return;
 
                 case 'idle':
                     delay = 0.5 + Math.random();
@@ -106,11 +121,10 @@ export class Duck extends Entity {
                     break;
             }
         }
-        else {
-            this.image.frame = this.image.texture.get(this.direction.offset + this.f);
 
-            this.gameState.scene.time.delayedCall(delay * 1000, this.changeFrame, [], this);
-        }
+        this.image.frame = this.image.texture.get(this.direction.offset + this.f);
+        this.gameState.scene.time.delayedCall(delay * 1000, this.changeFrame, [], this);
+        this.f += this.animationStep;
     }
 
     resetAnimation() {
@@ -122,6 +136,9 @@ export class Duck extends Entity {
     }
 
     update() {
+        if (!this.active)
+            return;
+
         // is there bread close by?
         if (this.target == null && this.gameState.fetchFood().length > 0) {
             const breadList = this.gameState.fetchFood().map(f => ({ distance: this.distanceFromEntity(f) + randomInt(30), target: f }));
@@ -137,8 +154,11 @@ export class Duck extends Entity {
                 return;
             }
 
-            if (this.distanceFromEntity(this.target) < 1.5) {
+            if (this.distanceFromEntity(this.target) < 2.5) {
                 this.target.destroy();
+
+                // feed animation
+                this.startFeedAnimation();
                 return;
             }
 
@@ -176,7 +196,6 @@ export class Duck extends Entity {
             //  Walked far enough?
             if (Phaser.Math.Distance.Between(this.startX, this.startY, this.x, this.y) >= this.distance) {
                 this.direction = this.direction.opposite;
-                //this.f = this.anim.startFrame;
                 this.image.frame = this.image.texture.get(this.direction.offset + this.f);
                 this.startX = this.x;
                 this.startY = this.y;

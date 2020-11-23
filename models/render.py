@@ -70,6 +70,7 @@ def renderDuck(skin_name):
     files = []
 
 
+    # tail wagging
     bpy.data.shape_keys["Key.001"].key_blocks["tail-right"].value = 1.0
     render_frames(files)
     bpy.data.shape_keys["Key.001"].key_blocks["tail-right"].value = 0.5
@@ -82,6 +83,13 @@ def renderDuck(skin_name):
     render_frames(files)
     bpy.data.shape_keys["Key.001"].key_blocks["tail-left"].value = 0.0
 
+    # feeding
+    render_frames(files) # wasted frame for laziness reasons
+    bpy.data.shape_keys["Key.001"].key_blocks["feed"].value = 0.5
+    render_frames(files)
+    bpy.data.shape_keys["Key.001"].key_blocks["feed"].value = 1.0
+    render_frames(files)
+    bpy.data.shape_keys["Key.001"].key_blocks["feed"].value = 0.0
 
 
     images = [Image.open(x) for x in files]
