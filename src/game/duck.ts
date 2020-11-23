@@ -1,6 +1,8 @@
+import { flattenDiagnosticMessageText } from "typescript";
 import { Entity } from "./entity";
 import { EntityType } from "./entityType";
 import { GameState } from "./gameState";
+import { randomInt } from "./utils";
 
 const directions = {
     west: { offset: 0, x: -2, y: 0, opposite: 'east' },
@@ -128,16 +130,13 @@ export class Duck extends Entity {
 
     update() {
         // is there bread close by?
-        this.gameState.fetchFood().forEach(f => {
-            if (this.target != null)
-                return;
-
-            if (this.distanceFromEntity(f) < 200) {
-
-                // lets go
-                this.target = f;
+        if (this.target == null && this.gameState.fetchFood().length > 0) {
+            const breadList = this.gameState.fetchFood().map(f => ({ distance: this.distanceFromEntity(f) + randomInt(30), target: f }));
+            const select = breadList.sort(f => f.distance).reverse()[0];
+            if (select.distance < 250) {
+                this.target = select.target;
             }
-        });
+        }
 
         if (this.target) {
             if (this.target.isDestroyed) {
