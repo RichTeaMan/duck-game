@@ -16,13 +16,13 @@ export class Food extends Entity {
     constructor(gameState: GameState, imageName: string, x: number, y: number) {
         super(gameState, imageName, x, y);
 
-        this.image.depth = 900;
+        this.image.depth = y + 32;
     }
 
     update() {
         this.start++;
 
-        if (this.start > 1000) {
+        if (this.start > 200) {
             this.destroy();
         }
     }

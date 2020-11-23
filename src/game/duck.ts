@@ -1,3 +1,4 @@
+import { Entity } from "./entity";
 import { GameState } from "./gameState";
 
 const directions = {
@@ -61,7 +62,7 @@ export class Duck extends Phaser.GameObjects.Image {
 
     depth: number;
 
-    target = null;
+    target: Entity = null;
 
     gameState: GameState;
 
@@ -71,19 +72,12 @@ export class Duck extends Phaser.GameObjects.Image {
         this.startX = x;
         this.startY = y;
         this.distance = distance;
-
         this.motion = motion;
         this.anim = duckAnims[motion];
         this.direction = directions[direction];
         this.speed = this.anim.speed;
         this.f = this.anim.startFrame;
-
         this.gameState = gameState;
-
-        //Phaser.GameObjects.Image.call(this, scene, x, y, 'skeleton', this.direction.offset + this.f);
-
-
-        this.depth = y + 64;
 
         this.scene.time.delayedCall(this.anim.speed * 1000, this.changeFrame, [], this);
     };
@@ -92,6 +86,7 @@ export class Duck extends Phaser.GameObjects.Image {
         //this.f++;
 
         var delay = this.anim.speed;
+        this.depth = this.y + 64;
 
         if (this.f === this.anim.endFrame) {
             switch (this.motion) {
@@ -143,7 +138,7 @@ export class Duck extends Phaser.GameObjects.Image {
 
             const dist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
 
-            if (dist < 500) {
+            if (dist < 200) {
 
                 // lets go
                 this.target = f;
@@ -155,7 +150,20 @@ export class Duck extends Phaser.GameObjects.Image {
                 this.target = null;
                 return;
             }
-            const velocity = 0.5;
+
+            // TODO DRY this up
+            {
+                const dx = Math.abs(this.x - this.target.x);
+                const dy = Math.abs(this.y - this.target.y);
+
+                const dist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+                if (dist < 1.5) {
+                    this.target.destroy();
+                    return;
+                }
+            }
+
+            const velocity = 0.05;
             const dx = this.target.x - this.x;
             const dy = this.target.y - this.y;
 

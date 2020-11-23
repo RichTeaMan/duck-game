@@ -98,18 +98,18 @@ function create() {
     duck = this.add.existing(new PlayerDuck(gameState, 600, 200, 'walk', 'east', 100));
 
     entities.push(this.add.existing(new Duck(gameState, 240, 290, 'walk', 'southEast', 100)));
-    //entities.push(this.add.existing(new Duck(gameState, 100, 380, 'walk', 'southEast', 230)));
-    //entities.push(this.add.existing(new Duck(gameState, 620, 140, 'walk', 'south', 380)));
-    //entities.push(this.add.existing(new Duck(gameState, 460, 180, 'walk', 'south', 150)));
-    //entities.push(this.add.existing(new Duck(gameState, 760, 100, 'walk', 'southEast', 670)));
-    //entities.push(this.add.existing(new Duck(gameState, 800, 140, 'walk', 'northWest', 800)));
-    //entities.push(this.add.existing(new Duck(gameState, 750, 480, 'walk', 'east', 200)));
-    //entities.push(this.add.existing(new Duck(gameState, 1030, 300, 'walk', 'west', 100)));
-    //entities.push(this.add.existing(new Duck(gameState, 1180, 340, 'walk', 'northEast', 420)));
-    //entities.push(this.add.existing(new Duck(gameState, 1180, 180, 'walk', 'southEast', 160)));
-    //entities.push(this.add.existing(new Duck(gameState, 1450, 320, 'walk', 'southWest', 320)));
-    //entities.push(this.add.existing(new Duck(gameState, 1500, 340, 'walk', 'southWest', 340)));
-    //entities.push(this.add.existing(new Duck(gameState, 1550, 360, 'walk', 'southWest', 330)));
+    entities.push(this.add.existing(new Duck(gameState, 100, 380, 'walk', 'southEast', 230)));
+    entities.push(this.add.existing(new Duck(gameState, 620, 140, 'walk', 'south', 380)));
+    entities.push(this.add.existing(new Duck(gameState, 460, 180, 'walk', 'south', 150)));
+    entities.push(this.add.existing(new Duck(gameState, 760, 100, 'walk', 'southEast', 670)));
+    entities.push(this.add.existing(new Duck(gameState, 800, 140, 'walk', 'northWest', 800)));
+    entities.push(this.add.existing(new Duck(gameState, 750, 480, 'walk', 'east', 200)));
+    entities.push(this.add.existing(new Duck(gameState, 1030, 300, 'walk', 'west', 100)));
+    entities.push(this.add.existing(new Duck(gameState, 1180, 340, 'walk', 'northEast', 420)));
+    entities.push(this.add.existing(new Duck(gameState, 1180, 180, 'walk', 'southEast', 160)));
+    entities.push(this.add.existing(new Duck(gameState, 1450, 320, 'walk', 'southWest', 320)));
+    entities.push(this.add.existing(new Duck(gameState, 1500, 340, 'walk', 'southWest', 340)));
+    entities.push(this.add.existing(new Duck(gameState, 1550, 360, 'walk', 'southWest', 330)));
 
     this.cameras.main.setSize(1600, 1200);
 
