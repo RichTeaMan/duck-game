@@ -22,6 +22,10 @@ export abstract class Entity {
             this.image.destroy();
     }
 
+    distanceFromEntity(otherEntity: Entity) {
+        return Phaser.Math.Distance.Between(this.x, this.y, otherEntity.x, otherEntity.y);
+    }
+
     get x() {
         return this.image.x;
     }

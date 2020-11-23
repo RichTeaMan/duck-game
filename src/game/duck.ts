@@ -132,12 +132,7 @@ export class Duck extends Entity {
             if (this.target != null)
                 return;
 
-            const dx = Math.abs(this.x - f.x);
-            const dy = Math.abs(this.y - f.y);
-
-            const dist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-
-            if (dist < 200) {
+            if (this.distanceFromEntity(f) < 200) {
 
                 // lets go
                 this.target = f;
@@ -150,16 +145,9 @@ export class Duck extends Entity {
                 return;
             }
 
-            // TODO DRY this up
-            {
-                const dx = Math.abs(this.x - this.target.x);
-                const dy = Math.abs(this.y - this.target.y);
-
-                const dist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-                if (dist < 1.5) {
-                    this.target.destroy();
-                    return;
-                }
+            if (this.distanceFromEntity(this.target) < 1.5) {
+                this.target.destroy();
+                return;
             }
 
             const velocity = 0.05;
