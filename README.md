@@ -47,7 +47,6 @@ You don't have to ever use `eject`. The curated feature set is suitable for smal
 Navigate to installed Blender directory, then into the python/bin directory:
 
 ```bash
-./python.exe pip
 ./python.exe ../lib/ensurepip
 ./python.exe ../lib/site-packages/pip install pillow --user
 ```

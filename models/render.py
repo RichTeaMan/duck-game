@@ -3,6 +3,7 @@ import bpy
 import mathutils
 from PIL import Image
 
+scn = bpy.context.scene
 
 def update_camera(camera, focus_point=mathutils.Vector((0.0, 0.0, 0.0)), distance=10.0):
     """
@@ -44,47 +45,44 @@ def render_direction(direction_name, camera_x, camera_y):
                           use_viewport=False, layer='', scene='')
     return filepath
 
+def renderDuck(skin_name):
 
-scn = bpy.context.scene
+    texture_image = bpy.data.images[f"duck-texture-{skin_name}"]
 
-# create the first camera
-cam1 = bpy.data.cameras.new("Camera t")
-cam1.lens = 18
+    mat = bpy.data.materials.get("duck-body")
+    bsdf = mat.node_tree.nodes["Principled BSDF"]
+    shader_node_texture_image = mat.node_tree.nodes.new('ShaderNodeTexImage')
+    shader_node_texture_image.image = texture_image
+    mat.node_tree.links.new(bsdf.inputs['Base Color'], shader_node_texture_image.outputs['Color'])
 
-# create the first camera object
-cam_obj1 = bpy.data.objects.new("Camera t", cam1)
-cam_obj1.location = (-0.5, -0.5, 0.6)
-cam_obj1.rotation_euler = (0.6799, 0, 0.8254)
-scn.collection.objects.link(cam_obj1)
-
-bpy.ops.render.render(animation=False, write_still=True,
-                      use_viewport=False, layer='', scene='')
-
-files = []
-files.append(render_direction("W", -.5, 0))
-files.append(render_direction("NW", -.5, -.5))
-files.append(render_direction("N", 0, -.5))
-files.append(render_direction("NE", .5, -.5))
-files.append(render_direction("E", .5, 0))
-files.append(render_direction("SE", .5, .5))
-files.append(render_direction("S", 0, .5))
-files.append(render_direction("SW", -.5, .5))
+    files = []
+    files.append(render_direction("W", -.5, 0))
+    files.append(render_direction("NW", -.5, -.5))
+    files.append(render_direction("N", 0, -.5))
+    files.append(render_direction("NE", .5, -.5))
+    files.append(render_direction("E", .5, 0))
+    files.append(render_direction("SE", .5, .5))
+    files.append(render_direction("S", 0, .5))
+    files.append(render_direction("SW", -.5, .5))
 
 
-images = [Image.open(x) for x in files]
-widths, heights = zip(*(i.size for i in images))
+    images = [Image.open(x) for x in files]
+    widths, heights = zip(*(i.size for i in images))
 
-# sheet is padded
-total_width = 32 * 128
-total_height = sum(heights)
+    # sheet is padded
+    total_width = 32 * 128
+    total_height = sum(heights)
 
-new_im = Image.new('RGBA', (total_width, total_height))
+    new_im = Image.new('RGBA', (total_width, total_height))
 
-x_offset = 0
-y_offset = 0
-for im in images:
-    new_im.paste(im, (x_offset, y_offset))
-    #x_offset += im.size[0]
-    y_offset += im.size[1]
+    x_offset = 0
+    y_offset = 0
+    for im in images:
+        new_im.paste(im, (x_offset, y_offset))
+        #x_offset += im.size[0]
+        y_offset += im.size[1]
 
-new_im.save("F:/projects/duck-game/public/assets/duck-white-spritesheet.png")
+    new_im.save(f"F:/projects/duck-game/public/assets/duck-{skin_name}-spritesheet.png")
+
+renderDuck("white")
+renderDuck("mallard")

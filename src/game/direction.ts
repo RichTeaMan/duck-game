@@ -40,7 +40,6 @@ export class Direction {
         Direction.map[Direction.southEast.name] = Direction.southEast;
         Direction.map[Direction.south.name] = Direction.south;
         Direction.map[Direction.southWest.name] = Direction.southWest;
-
     }
 
     static get(name: string): Direction {
