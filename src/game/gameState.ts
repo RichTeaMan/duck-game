@@ -1,11 +1,11 @@
 import { Entity } from "./entity";
+import { EntityType } from "./entityType";
 import { Food } from "./food";
 
 export class GameState {
 
     scene: Phaser.Scene;
     cursors: Phaser.Types.Input.Keyboard.CursorKeys;
-    foodList: Array<Food> = [];
     entities: Array<Entity> = [];
 
     constructor(scene: Phaser.Scene) {
@@ -14,19 +14,28 @@ export class GameState {
     }
 
     update() {
-        this.foodList.forEach(food => {
-            food.update();
+        this.entities.forEach(entity => {
+            entity.update();
         })
     }
 
     pruneEntities() {
 
-        const newFood: Array<Food> = [];
-        this.foodList.forEach(food => {
-            if (!food.isDestroyed) {
-                newFood.push(food);
+        const newEntities: Array<Entity> = [];
+        this.entities.forEach(entity => {
+            if (!entity.isDestroyed) {
+                newEntities.push(entity);
             }
         });
-        this.foodList = newFood;
+        this.entities = newEntities;
+    }
+
+    fetchFood(): Food[] {
+        return this.entities.filter(e => e.entityType() === EntityType.Food) as Food[];
+    }
+
+    addEntity(entity: Entity) {
+
+        this.entities.push(entity);
     }
 }

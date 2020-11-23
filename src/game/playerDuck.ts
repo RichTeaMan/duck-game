@@ -31,8 +31,8 @@ export class PlayerDuck extends Duck {
 
         if (this.direction.y !== 0) {
             this.y += this.direction.y * this.speed;
-            this.depth = this.y + 64;
+            this.image.depth = this.y + 64;
         }
-        this.frame = this.texture.get(this.direction.offset + this.f);
+        this.image.frame = this.image.texture.get(this.direction.offset + this.f);
     }
 }

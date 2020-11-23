@@ -1,4 +1,5 @@
 import { Entity } from "./entity";
+import { EntityType } from "./entityType";
 import { GameState } from "./gameState";
 
 export class Food extends Entity {
@@ -7,7 +8,7 @@ export class Food extends Entity {
 
         const bread = new Food(gameState, 'bread', x, y);
         bread.image.scale = 0.2;
-        gameState.foodList.push(bread);
+        gameState.entities.push(bread);
         return bread;
     }
 
@@ -17,6 +18,10 @@ export class Food extends Entity {
         super(gameState, imageName, x, y);
 
         this.image.depth = y + 32;
+    }
+
+    entityType(): EntityType {
+        return EntityType.Food;
     }
 
     update() {

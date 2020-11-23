@@ -1,12 +1,19 @@
+import { EntityType } from "./entityType";
 import { GameState } from "./gameState";
 
-export class Entity {
+export abstract class Entity {
 
     image: Phaser.GameObjects.Image;
     isDestroyed = false;
 
     constructor(gameState: GameState, imageName: string, x: number, y: number) {
         this.image = gameState.scene.add.image(x, y, imageName);
+    }
+
+    abstract entityType(): EntityType;
+
+    update() {
+
     }
 
     destroy() {

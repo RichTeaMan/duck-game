@@ -4,12 +4,6 @@ import { Food } from './food';
 import { GameState } from './gameState';
 import { PlayerDuck } from './playerDuck';
 
-let cursors;
-
-let entities = [];
-
-let duck;
-
 let tileWidthHalf;
 let tileHeightHalf;
 
@@ -73,43 +67,20 @@ function create() {
     //buildMap();
     //placeHouses();
 
-    /*
-    skeletons.push(this.add.existing(new Skeleton(this, 240, 290, 'walk', 'southEast', 100)));
-    skeletons.push(this.add.existing(new Skeleton(this, 100, 380, 'walk', 'southEast', 230)));
-    skeletons.push(this.add.existing(new Skeleton(this, 620, 140, 'walk', 'south', 380)));
-    skeletons.push(this.add.existing(new Skeleton(this, 460, 180, 'idle', 'south', 0)));
-
-    skeletons.push(this.add.existing(new Skeleton(this, 760, 100, 'attack', 'southEast', 0)));
-    skeletons.push(this.add.existing(new Skeleton(this, 800, 140, 'attack', 'northWest', 0)));
-
-    skeletons.push(this.add.existing(new Skeleton(this, 750, 480, 'walk', 'east', 200)));
-
-    skeletons.push(this.add.existing(new Skeleton(this, 1030, 300, 'die', 'west', 0)));
-
-    skeletons.push(this.add.existing(new Skeleton(this, 1180, 340, 'attack', 'northEast', 0)));
-
-    skeletons.push(this.add.existing(new Skeleton(this, 1180, 180, 'walk', 'southEast', 160)));
-
-    skeletons.push(this.add.existing(new Skeleton(this, 1450, 320, 'walk', 'southWest', 320)));
-    skeletons.push(this.add.existing(new Skeleton(this, 1500, 340, 'walk', 'southWest', 340)));
-    skeletons.push(this.add.existing(new Skeleton(this, 1550, 360, 'walk', 'southWest', 330)));
-*/
-
-    duck = this.add.existing(new PlayerDuck(gameState, 600, 200, 'walk', 'east', 100));
-
-    entities.push(this.add.existing(new Duck(gameState, 240, 290, 'walk', 'southEast', 100)));
-    entities.push(this.add.existing(new Duck(gameState, 100, 380, 'walk', 'southEast', 230)));
-    entities.push(this.add.existing(new Duck(gameState, 620, 140, 'walk', 'south', 380)));
-    entities.push(this.add.existing(new Duck(gameState, 460, 180, 'walk', 'south', 150)));
-    entities.push(this.add.existing(new Duck(gameState, 760, 100, 'walk', 'southEast', 670)));
-    entities.push(this.add.existing(new Duck(gameState, 800, 140, 'walk', 'northWest', 800)));
-    entities.push(this.add.existing(new Duck(gameState, 750, 480, 'walk', 'east', 200)));
-    entities.push(this.add.existing(new Duck(gameState, 1030, 300, 'walk', 'west', 100)));
-    entities.push(this.add.existing(new Duck(gameState, 1180, 340, 'walk', 'northEast', 420)));
-    entities.push(this.add.existing(new Duck(gameState, 1180, 180, 'walk', 'southEast', 160)));
-    entities.push(this.add.existing(new Duck(gameState, 1450, 320, 'walk', 'southWest', 320)));
-    entities.push(this.add.existing(new Duck(gameState, 1500, 340, 'walk', 'southWest', 340)));
-    entities.push(this.add.existing(new Duck(gameState, 1550, 360, 'walk', 'southWest', 330)));
+    gameState.addEntity(new PlayerDuck(gameState, 600, 200, 'walk', 'east', 100));
+    gameState.addEntity(new Duck(gameState, 240, 290, 'walk', 'southEast', 100));
+    gameState.addEntity(new Duck(gameState, 100, 380, 'walk', 'southEast', 230));
+    gameState.addEntity(new Duck(gameState, 620, 140, 'walk', 'south', 380));
+    gameState.addEntity(new Duck(gameState, 460, 180, 'walk', 'south', 150));
+    gameState.addEntity(new Duck(gameState, 760, 100, 'walk', 'southEast', 670));
+    gameState.addEntity(new Duck(gameState, 800, 140, 'walk', 'northWest', 800));
+    gameState.addEntity(new Duck(gameState, 750, 480, 'walk', 'east', 200));
+    gameState.addEntity(new Duck(gameState, 1030, 300, 'walk', 'west', 100));
+    gameState.addEntity(new Duck(gameState, 1180, 340, 'walk', 'northEast', 420));
+    gameState.addEntity(new Duck(gameState, 1180, 180, 'walk', 'southEast', 160));
+    gameState.addEntity(new Duck(gameState, 1450, 320, 'walk', 'southWest', 320));
+    gameState.addEntity(new Duck(gameState, 1500, 340, 'walk', 'southWest', 340));
+    gameState.addEntity(new Duck(gameState, 1550, 360, 'walk', 'southWest', 330));
 
     this.cameras.main.setSize(1600, 1200);
 
@@ -117,11 +88,6 @@ function create() {
 }
 
 function update() {
-    entities.forEach(function (skeleton) {
-        skeleton.update();
-    });
-
-    duck.update();
     gameState.update();
     gameState.pruneEntities();
 
