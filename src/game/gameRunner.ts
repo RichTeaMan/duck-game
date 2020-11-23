@@ -69,14 +69,15 @@ var duckAnims = {
 
 let cursors;
 
-var entities = [];
+let entities = [];
+let food: Array<Phaser.GameObjects.Image> = [];
 
-var duck;
+let duck;
 
-var tileWidthHalf;
-var tileHeightHalf;
+let tileWidthHalf;
+let tileHeightHalf;
 
-var d = 0;
+let d = 0;
 
 let scene: Phaser.Scene;
 
@@ -214,6 +215,8 @@ class Duck extends Phaser.GameObjects.Image {
 
     playerControlled = false;
 
+    target = null;
+
     constructor(scene, x, y, motion, direction, distance) {
         super(scene, x, y, 'duck')//, direction.offset + anims[motion].startFrame)
 
@@ -305,20 +308,60 @@ class Duck extends Phaser.GameObjects.Image {
         }
         else {
             if (this.motion === 'walk') {
-                this.x += this.direction.x * this.speed;
+                // is there bread close by?
+                food.forEach(f => {
+                    if (this.target != null)
+                        return;
 
-                if (this.direction.y !== 0) {
-                    this.y += this.direction.y * this.speed;
-                    this.depth = this.y + 64;
+                    const dx = Math.abs(this.x - f.x);
+                    const dy = Math.abs(this.y - f.y);
+
+                    const dist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+
+                    if (dist < 500) {
+
+                        // lets go
+                        this.target = f;
+                    }
+                });
+
+                if (this.target) {
+                    const velocity = 2;
+                    const dx =  this.target.x - this.x;
+                    const dy =  this.target.y - this.y;
+
+                    const angle = Math.atan(Math.abs(dx) / Math.abs(dy));
+                    let xR = velocity * Math.cos(angle);
+                    let yR = velocity * Math.sin(angle);
+
+                    if (dx < 0 && xR > 0) {
+                        xR = -xR;
+                    }
+                    if (dy < 0 && yR > 0) {
+                        yR = -yR;
+                    }
+
+                    console.log(`This: ${this.x},${this.y} Target: ${this.target.x},${this.target.y} Velocity: ${xR},${yR} Bearing: ${angle}`)
+                    this.x += xR;
+                    this.y += yR;
                 }
+                else {
 
-                //  Walked far enough?
-                if (Phaser.Math.Distance.Between(this.startX, this.startY, this.x, this.y) >= this.distance) {
-                    this.direction = directions[this.direction.opposite];
-                    this.f = this.anim.startFrame;
-                    this.frame = this.texture.get(this.direction.offset + this.f);
-                    this.startX = this.x;
-                    this.startY = this.y;
+                    this.x += this.direction.x * this.speed;
+
+                    if (this.direction.y !== 0) {
+                        this.y += this.direction.y * this.speed;
+                        this.depth = this.y + 64;
+                    }
+
+                    //  Walked far enough?
+                    if (Phaser.Math.Distance.Between(this.startX, this.startY, this.x, this.y) >= this.distance) {
+                        this.direction = directions[this.direction.opposite];
+                        this.f = this.anim.startFrame;
+                        this.frame = this.texture.get(this.direction.offset + this.f);
+                        this.startX = this.x;
+                        this.startY = this.y;
+                    }
                 }
             }
         }
@@ -379,6 +422,8 @@ function create() {
         //const bread = scene.add.image(600, 200, 'bread');
         bread.depth = 900;
 
+        food.push(bread);
+
     }, this);
 
     //  Our Skeleton class
@@ -414,18 +459,18 @@ function create() {
     duck.playerControlled = true;
 
     entities.push(this.add.existing(new Duck(this, 240, 290, 'walk', 'southEast', 100)));
-    entities.push(this.add.existing(new Duck(this, 100, 380, 'walk', 'southEast', 230)));
-    entities.push(this.add.existing(new Duck(this, 620, 140, 'walk', 'south', 380)));
-    entities.push(this.add.existing(new Duck(this, 460, 180, 'walk', 'south', 150)));
-    entities.push(this.add.existing(new Duck(this, 760, 100, 'walk', 'southEast', 670)));
-    entities.push(this.add.existing(new Duck(this, 800, 140, 'walk', 'northWest', 800)));
-    entities.push(this.add.existing(new Duck(this, 750, 480, 'walk', 'east', 200)));
-    entities.push(this.add.existing(new Duck(this, 1030, 300, 'walk', 'west', 100)));
-    entities.push(this.add.existing(new Duck(this, 1180, 340, 'walk', 'northEast', 420)));
-    entities.push(this.add.existing(new Duck(this, 1180, 180, 'walk', 'southEast', 160)));
-    entities.push(this.add.existing(new Duck(this, 1450, 320, 'walk', 'southWest', 320)));
-    entities.push(this.add.existing(new Duck(this, 1500, 340, 'walk', 'southWest', 340)));
-    entities.push(this.add.existing(new Duck(this, 1550, 360, 'walk', 'southWest', 330)));
+    //entities.push(this.add.existing(new Duck(this, 100, 380, 'walk', 'southEast', 230)));
+    //entities.push(this.add.existing(new Duck(this, 620, 140, 'walk', 'south', 380)));
+    //entities.push(this.add.existing(new Duck(this, 460, 180, 'walk', 'south', 150)));
+    //entities.push(this.add.existing(new Duck(this, 760, 100, 'walk', 'southEast', 670)));
+    //entities.push(this.add.existing(new Duck(this, 800, 140, 'walk', 'northWest', 800)));
+    //entities.push(this.add.existing(new Duck(this, 750, 480, 'walk', 'east', 200)));
+    //entities.push(this.add.existing(new Duck(this, 1030, 300, 'walk', 'west', 100)));
+    //entities.push(this.add.existing(new Duck(this, 1180, 340, 'walk', 'northEast', 420)));
+    //entities.push(this.add.existing(new Duck(this, 1180, 180, 'walk', 'southEast', 160)));
+    //entities.push(this.add.existing(new Duck(this, 1450, 320, 'walk', 'southWest', 320)));
+    //entities.push(this.add.existing(new Duck(this, 1500, 340, 'walk', 'southWest', 340)));
+    //entities.push(this.add.existing(new Duck(this, 1550, 360, 'walk', 'southWest', 330)));
 
     this.cameras.main.setSize(1600, 1200);
 
@@ -486,7 +531,8 @@ function buildWater() {
 
             var tile = scene.add.image(centerX + tx, centerY + ty, 'water');
 
-            tile.depth = centerY + ty;
+            tile.depth = 200;
+            //tile.depth = centerY + ty;
             console.log(tile.depth);
             i++;
         }
