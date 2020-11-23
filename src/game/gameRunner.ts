@@ -2,6 +2,7 @@ import * as Phaser from 'phaser';
 import { Duck } from './duck';
 import { Food } from './food';
 import { GameState } from './gameState';
+import { PlayerDuck } from './playerDuck';
 
 let cursors;
 
@@ -94,8 +95,7 @@ function create() {
     skeletons.push(this.add.existing(new Skeleton(this, 1550, 360, 'walk', 'southWest', 330)));
 */
 
-    duck = this.add.existing(new Duck(gameState, 600, 200, 'walk', 'east', 100));
-    duck.playerControlled = true;
+    duck = this.add.existing(new PlayerDuck(gameState, 600, 200, 'walk', 'east', 100));
 
     entities.push(this.add.existing(new Duck(gameState, 240, 290, 'walk', 'southEast', 100)));
     //entities.push(this.add.existing(new Duck(gameState, 100, 380, 'walk', 'southEast', 230)));

@@ -61,8 +61,6 @@ export class Duck extends Phaser.GameObjects.Image {
 
     depth: number;
 
-    playerControlled = false;
-
     target = null;
 
     gameState: GameState;
@@ -135,88 +133,60 @@ export class Duck extends Phaser.GameObjects.Image {
     }
 
     update() {
-        if (this.playerControlled) {
-            if (this.gameState.cursors.left.isDown) {
-                this.direction = directions['west'];
-            } else if (this.gameState.cursors.up.isDown) {
-                this.direction = directions['north'];
-            } else if (this.gameState.cursors.right.isDown) {
-                this.direction = directions['east'];
-            } else if (this.gameState.cursors.down.isDown) {
-                this.direction = directions['south'];
-            } else {
-                // stop, somehow
+        // is there bread close by?
+        this.gameState.foodList.forEach(f => {
+            if (this.target != null)
+                return;
+
+            const dx = Math.abs(this.x - f.x);
+            const dy = Math.abs(this.y - f.y);
+
+            const dist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+
+            if (dist < 500) {
+
+                // lets go
+                this.target = f;
+            }
+        });
+
+        if (this.target) {
+            const velocity = 2;
+            const dx = this.target.x - this.x;
+            const dy = this.target.y - this.y;
+
+            const angle = Math.atan(Math.abs(dx) / Math.abs(dy));
+            let xR = velocity * Math.cos(angle);
+            let yR = velocity * Math.sin(angle);
+
+            if (dx < 0 && xR > 0) {
+                xR = -xR;
+            }
+            if (dy < 0 && yR > 0) {
+                yR = -yR;
             }
 
-            if (this.motion === 'walk') {
-                this.x += this.direction.x * this.speed;
-
-                if (this.direction.y !== 0) {
-                    this.y += this.direction.y * this.speed;
-                    this.depth = this.y + 64;
-                }
-                this.frame = this.texture.get(this.direction.offset + this.f);
-            }
+            console.log(`This: ${this.x},${this.y} Target: ${this.target.x},${this.target.y} Velocity: ${xR},${yR} Bearing: ${angle}`)
+            this.x += xR;
+            this.y += yR;
         }
         else {
-            if (this.motion === 'walk') {
-                // is there bread close by?
-                this.gameState.foodList.forEach(f => {
-                    if (this.target != null)
-                        return;
 
-                    const dx = Math.abs(this.x - f.x);
-                    const dy = Math.abs(this.y - f.y);
+            this.x += this.direction.x * this.speed;
 
-                    const dist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+            if (this.direction.y !== 0) {
+                this.y += this.direction.y * this.speed;
+                this.depth = this.y + 64;
+            }
 
-                    if (dist < 500) {
-
-                        // lets go
-                        this.target = f;
-                    }
-                });
-
-                if (this.target) {
-                    const velocity = 2;
-                    const dx =  this.target.x - this.x;
-                    const dy =  this.target.y - this.y;
-
-                    const angle = Math.atan(Math.abs(dx) / Math.abs(dy));
-                    let xR = velocity * Math.cos(angle);
-                    let yR = velocity * Math.sin(angle);
-
-                    if (dx < 0 && xR > 0) {
-                        xR = -xR;
-                    }
-                    if (dy < 0 && yR > 0) {
-                        yR = -yR;
-                    }
-
-                    console.log(`This: ${this.x},${this.y} Target: ${this.target.x},${this.target.y} Velocity: ${xR},${yR} Bearing: ${angle}`)
-                    this.x += xR;
-                    this.y += yR;
-                }
-                else {
-
-                    this.x += this.direction.x * this.speed;
-
-                    if (this.direction.y !== 0) {
-                        this.y += this.direction.y * this.speed;
-                        this.depth = this.y + 64;
-                    }
-
-                    //  Walked far enough?
-                    if (Phaser.Math.Distance.Between(this.startX, this.startY, this.x, this.y) >= this.distance) {
-                        this.direction = directions[this.direction.opposite];
-                        this.f = this.anim.startFrame;
-                        this.frame = this.texture.get(this.direction.offset + this.f);
-                        this.startX = this.x;
-                        this.startY = this.y;
-                    }
-                }
+            //  Walked far enough?
+            if (Phaser.Math.Distance.Between(this.startX, this.startY, this.x, this.y) >= this.distance) {
+                this.direction = directions[this.direction.opposite];
+                this.f = this.anim.startFrame;
+                this.frame = this.texture.get(this.direction.offset + this.f);
+                this.startX = this.x;
+                this.startY = this.y;
             }
         }
     }
-
 }
