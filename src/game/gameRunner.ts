@@ -1,4 +1,5 @@
 import * as Phaser from 'phaser';
+import { Direction } from './direction';
 import { Duck } from './duck';
 import { Food } from './food';
 import { GameState } from './gameState';
@@ -67,20 +68,20 @@ function create() {
     //buildMap();
     //placeHouses();
 
-    gameState.addEntity(new PlayerDuck(gameState, 600, 200, 'walk', 'east', 100));
-    gameState.addEntity(new Duck(gameState, 240, 290, 'walk', 'southEast', 100));
-    gameState.addEntity(new Duck(gameState, 100, 380, 'walk', 'southEast', 230));
-    gameState.addEntity(new Duck(gameState, 620, 140, 'walk', 'south', 380));
-    gameState.addEntity(new Duck(gameState, 460, 180, 'walk', 'south', 150));
-    gameState.addEntity(new Duck(gameState, 760, 100, 'walk', 'southEast', 670));
-    gameState.addEntity(new Duck(gameState, 800, 140, 'walk', 'northWest', 800));
-    gameState.addEntity(new Duck(gameState, 750, 480, 'walk', 'east', 200));
-    gameState.addEntity(new Duck(gameState, 1030, 300, 'walk', 'west', 100));
-    gameState.addEntity(new Duck(gameState, 1180, 340, 'walk', 'northEast', 420));
-    gameState.addEntity(new Duck(gameState, 1180, 180, 'walk', 'southEast', 160));
-    gameState.addEntity(new Duck(gameState, 1450, 320, 'walk', 'southWest', 320));
-    gameState.addEntity(new Duck(gameState, 1500, 340, 'walk', 'southWest', 340));
-    gameState.addEntity(new Duck(gameState, 1550, 360, 'walk', 'southWest', 330));
+    gameState.addEntity(new PlayerDuck(gameState, 600, 200, 'walk', Direction.get('east'), 100));
+    gameState.addEntity(new Duck(gameState, 240, 290, 'walk', Direction.get('southEast'), 100));
+    gameState.addEntity(new Duck(gameState, 100, 380, 'walk', Direction.get('southEast'), 230));
+    gameState.addEntity(new Duck(gameState, 620, 140, 'walk', Direction.get('south'), 380));
+    gameState.addEntity(new Duck(gameState, 460, 180, 'walk', Direction.get('south'), 150));
+    gameState.addEntity(new Duck(gameState, 760, 100, 'walk', Direction.get('southEast'), 670));
+    gameState.addEntity(new Duck(gameState, 800, 140, 'walk', Direction.get('northWest'), 800));
+    gameState.addEntity(new Duck(gameState, 750, 480, 'walk', Direction.get('east'), 200));
+    gameState.addEntity(new Duck(gameState, 1030, 300, 'walk', Direction.get('west'), 100));
+    gameState.addEntity(new Duck(gameState, 1180, 340, 'walk', Direction.get('northEast'), 420));
+    gameState.addEntity(new Duck(gameState, 1180, 180, 'walk', Direction.get('southEast'), 160));
+    gameState.addEntity(new Duck(gameState, 1450, 320, 'walk', Direction.get('southWest'), 320));
+    gameState.addEntity(new Duck(gameState, 1500, 340, 'walk', Direction.get('southWest'), 340));
+    gameState.addEntity(new Duck(gameState, 1550, 360, 'walk', Direction.get('southWest'), 330));
 
     this.cameras.main.setSize(1600, 1200);
 

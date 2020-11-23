@@ -1,19 +1,8 @@
-import { flattenDiagnosticMessageText } from "typescript";
+import { Direction } from "./direction";
 import { Entity } from "./entity";
 import { EntityType } from "./entityType";
 import { GameState } from "./gameState";
 import { randomInt } from "./utils";
-
-const directions = {
-    west: { offset: 0, x: -2, y: 0, opposite: 'east' },
-    northWest: { offset: 32, x: -2, y: -1, opposite: 'southEast' },
-    north: { offset: 64, x: 0, y: -2, opposite: 'south' },
-    northEast: { offset: 96, x: 2, y: -1, opposite: 'southWest' },
-    east: { offset: 128, x: 2, y: 0, opposite: 'west' },
-    southEast: { offset: 160, x: 2, y: 1, opposite: 'northWest' },
-    south: { offset: 192, x: 0, y: 2, opposite: 'north' },
-    southWest: { offset: 224, x: -2, y: 1, opposite: 'northEast' }
-};
 
 const duckAnims = {
     idle: {
@@ -51,7 +40,7 @@ export class Duck extends Entity {
 
     motion: any;
     anim: any;
-    direction: any;
+    direction: Direction;
     speed: number;
 
     /**
@@ -63,7 +52,7 @@ export class Duck extends Entity {
 
     gameState: GameState;
 
-    constructor(gameState: GameState, x: number, y: number, motion, direction, distance) {
+    constructor(gameState: GameState, x: number, y: number, motion, direction: Direction, distance) {
         super(gameState, 'duck', x, y)//, direction.offset + anims[motion].startFrame)
 
         this.startX = x;
@@ -71,7 +60,7 @@ export class Duck extends Entity {
         this.distance = distance;
         this.motion = motion;
         this.anim = duckAnims[motion];
-        this.direction = directions[direction];
+        this.direction = direction;
         this.speed = this.anim.speed;
         this.f = this.anim.startFrame;
         this.gameState = gameState;
@@ -182,7 +171,7 @@ export class Duck extends Entity {
 
             //  Walked far enough?
             if (Phaser.Math.Distance.Between(this.startX, this.startY, this.x, this.y) >= this.distance) {
-                this.direction = directions[this.direction.opposite];
+                this.direction = this.direction.opposite;
                 this.f = this.anim.startFrame;
                 this.image.frame = this.image.texture.get(this.direction.offset + this.f);
                 this.startX = this.x;
