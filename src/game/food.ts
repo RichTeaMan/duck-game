@@ -1,6 +1,7 @@
+import { Entity } from "./entity";
 import { GameState } from "./gameState";
 
-export class Food {
+export class Food extends Entity {
 
     static createBread(gameState: GameState, x: number, y: number): Food {
 
@@ -10,25 +11,19 @@ export class Food {
         return bread;
     }
 
-    image: Phaser.GameObjects.Image;
+    start = 0;
 
     constructor(gameState: GameState, imageName: string, x: number, y: number) {
-        this.image = gameState.scene.add.image(x, y, imageName);
+        super(gameState, imageName, x, y);
 
         this.image.depth = 900;
     }
 
-    get x() {
-        return this.image.x;
-    }
-    set x(x: number) {
-        this.image.x = x;
-    }
+    update() {
+        this.start++;
 
-    get y() {
-        return this.image.y;
-    }
-    set y(y: number) {
-        this.image.y = y;
+        if (this.start > 1000) {
+            this.destroy();
+        }
     }
 }

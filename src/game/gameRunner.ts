@@ -122,6 +122,8 @@ function update() {
     });
 
     duck.update();
+    gameState.update();
+    gameState.pruneEntities();
 
     // return;
 

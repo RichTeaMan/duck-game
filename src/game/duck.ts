@@ -151,13 +151,21 @@ export class Duck extends Phaser.GameObjects.Image {
         });
 
         if (this.target) {
-            const velocity = 2;
+            if (this.target.isDestroyed) {
+                this.target = null;
+                return;
+            }
+            const velocity = 0.5;
             const dx = this.target.x - this.x;
             const dy = this.target.y - this.y;
 
             const angle = Math.atan(Math.abs(dx) / Math.abs(dy));
-            let xR = velocity * Math.cos(angle);
-            let yR = velocity * Math.sin(angle);
+            let xR = Math.cos(angle);
+            let yR = Math.sin(angle);
+
+            const total = xR + yR;
+            const modX = (dx / total) * velocity;
+            const modY = (dy / total) * velocity;
 
             if (dx < 0 && xR > 0) {
                 xR = -xR;
@@ -166,9 +174,8 @@ export class Duck extends Phaser.GameObjects.Image {
                 yR = -yR;
             }
 
-            console.log(`This: ${this.x},${this.y} Target: ${this.target.x},${this.target.y} Velocity: ${xR},${yR} Bearing: ${angle}`)
-            this.x += xR;
-            this.y += yR;
+            this.x += modX;
+            this.y += modY;
         }
         else {
 
