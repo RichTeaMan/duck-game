@@ -54,5 +54,5 @@ Navigate to installed Blender directory, then into the python/bin directory:
 ## Running render script
 
 ```bash
-blender -b duck-white.blend -P render.py
+blender -b duck.blend -P render.py
 ```
