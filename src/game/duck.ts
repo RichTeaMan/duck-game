@@ -12,7 +12,7 @@ const duckAnims = {
     },
     walk: {
         startFrame: 0,
-        endFrame: 8,
+        endFrame: 4,
         speed: 0.45
     },
     attack: {
@@ -52,8 +52,10 @@ export class Duck extends Entity {
 
     gameState: GameState;
 
-    constructor(gameState: GameState, x: number, y: number, motion, direction: Direction, distance) {
-        super(gameState, 'duck', x, y)//, direction.offset + anims[motion].startFrame)
+    animationStep = 1;
+
+    constructor(gameState: GameState, x: number, y: number, motion, direction: Direction, distance, duckType = 'duck') {
+        super(gameState, duckType, x, y)//, direction.offset + anims[motion].startFrame)
 
         this.startX = x;
         this.startY = y;
@@ -73,15 +75,17 @@ export class Duck extends Entity {
     }
 
     changeFrame() {
-        //this.f++;
+        this.f += this.animationStep;
+
+        console.log(`${this.motion}/${this.animationStep} - ${this.f}`)
 
         var delay = this.anim.speed;
         this.image.depth = this.y + 64;
 
-        if (this.f === this.anim.endFrame) {
+        if (this.f === this.anim.endFrame || this.f === 0) {
             switch (this.motion) {
                 case 'walk':
-                    this.f = this.anim.startFrame;
+                    this.animationStep = -this.animationStep;
                     this.image.frame = this.image.texture.get(this.direction.offset + this.f);
                     this.gameState.scene.time.delayedCall(delay * 1000, this.changeFrame, [], this);
                     break;
@@ -172,7 +176,7 @@ export class Duck extends Entity {
             //  Walked far enough?
             if (Phaser.Math.Distance.Between(this.startX, this.startY, this.x, this.y) >= this.distance) {
                 this.direction = this.direction.opposite;
-                this.f = this.anim.startFrame;
+                //this.f = this.anim.startFrame;
                 this.image.frame = this.image.texture.get(this.direction.offset + this.f);
                 this.startX = this.x;
                 this.startY = this.y;

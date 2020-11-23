@@ -4,6 +4,7 @@ import mathutils
 from PIL import Image
 
 scn = bpy.context.scene
+images_created = 0
 
 def update_camera(camera, focus_point=mathutils.Vector((0.0, 0.0, 0.0)), distance=10.0):
     """
@@ -27,7 +28,8 @@ def update_camera(camera, focus_point=mathutils.Vector((0.0, 0.0, 0.0)), distanc
 
 
 def render_direction(direction_name, camera_x, camera_y):
-    filepath = f"F:/projects/duck-game/models/renders/test-{direction_name}.png"
+    global images_created
+    filepath = f"F:/projects/duck-game/models/renders/test-{images_created}.png"
     cam = bpy.data.cameras.new(f"Camera-{direction_name}")
     cam.lens = 18
 
@@ -43,10 +45,20 @@ def render_direction(direction_name, camera_x, camera_y):
     bpy.context.scene.render.filepath = filepath
     bpy.ops.render.render(animation=False, write_still=True,
                           use_viewport=False, layer='', scene='')
+    images_created = images_created + 1
     return filepath
 
-def renderDuck(skin_name):
+def render_frames(files):
+    files.append(render_direction("W", -.5, 0))
+    files.append(render_direction("NW", -.5, -.5))
+    files.append(render_direction("N", 0, -.5))
+    files.append(render_direction("NE", .5, -.5))
+    files.append(render_direction("E", .5, 0))
+    files.append(render_direction("SE", .5, .5))
+    files.append(render_direction("S", 0, .5))
+    files.append(render_direction("SW", -.5, .5))
 
+def renderDuck(skin_name):
     texture_image = bpy.data.images[f"duck-texture-{skin_name}"]
 
     mat = bpy.data.materials.get("duck-body")
@@ -56,14 +68,20 @@ def renderDuck(skin_name):
     mat.node_tree.links.new(bsdf.inputs['Base Color'], shader_node_texture_image.outputs['Color'])
 
     files = []
-    files.append(render_direction("W", -.5, 0))
-    files.append(render_direction("NW", -.5, -.5))
-    files.append(render_direction("N", 0, -.5))
-    files.append(render_direction("NE", .5, -.5))
-    files.append(render_direction("E", .5, 0))
-    files.append(render_direction("SE", .5, .5))
-    files.append(render_direction("S", 0, .5))
-    files.append(render_direction("SW", -.5, .5))
+
+
+    bpy.data.shape_keys["Key.001"].key_blocks["tail-right"].value = 1.0
+    render_frames(files)
+    bpy.data.shape_keys["Key.001"].key_blocks["tail-right"].value = 0.5
+    render_frames(files)
+    bpy.data.shape_keys["Key.001"].key_blocks["tail-right"].value = 0.0
+    render_frames(files)
+    bpy.data.shape_keys["Key.001"].key_blocks["tail-left"].value = 0.5
+    render_frames(files)
+    bpy.data.shape_keys["Key.001"].key_blocks["tail-left"].value = 1.0
+    render_frames(files)
+    bpy.data.shape_keys["Key.001"].key_blocks["tail-left"].value = 0.0
+
 
 
     images = [Image.open(x) for x in files]
@@ -77,12 +95,19 @@ def renderDuck(skin_name):
 
     x_offset = 0
     y_offset = 0
+    count = 0
     for im in images:
         new_im.paste(im, (x_offset, y_offset))
-        #x_offset += im.size[0]
-        y_offset += im.size[1]
+        count = count + 1
+        if count % 8 == 0:
+            y_offset = 0
+            x_offset += im.size[0]
+        else:
+            y_offset += im.size[1]
 
     new_im.save(f"F:/projects/duck-game/public/assets/duck-{skin_name}-spritesheet.png")
 
 renderDuck("white")
 renderDuck("mallard")
+
+print(f"Render complete. {images_created} images rendered.")

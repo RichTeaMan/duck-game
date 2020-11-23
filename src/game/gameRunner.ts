@@ -45,6 +45,7 @@ function preload() {
     this.load.image('house', 'assets/tests/iso/rem_0002.png');
     this.load.image('water', 'assets/water.png');
     this.load.spritesheet('duck', 'assets/duck-white-spritesheet.png', { frameWidth: 128, frameHeight: 128 });
+    this.load.spritesheet('mallard', 'assets/duck-mallard-spritesheet.png', { frameWidth: 128, frameHeight: 128 });
 
     this.load.image('bread', 'assets/bread_NW.png');
 }
@@ -74,14 +75,14 @@ function create() {
     gameState.addEntity(new Duck(gameState, 620, 140, 'walk', Direction.get('south'), 380));
     gameState.addEntity(new Duck(gameState, 460, 180, 'walk', Direction.get('south'), 150));
     gameState.addEntity(new Duck(gameState, 760, 100, 'walk', Direction.get('southEast'), 670));
-    gameState.addEntity(new Duck(gameState, 800, 140, 'walk', Direction.get('northWest'), 800));
+    gameState.addEntity(new Duck(gameState, 800, 140, 'walk', Direction.get('northWest'), 800, 'mallard'));
     gameState.addEntity(new Duck(gameState, 750, 480, 'walk', Direction.get('east'), 200));
-    gameState.addEntity(new Duck(gameState, 1030, 300, 'walk', Direction.get('west'), 100));
+    gameState.addEntity(new Duck(gameState, 1030, 300, 'walk', Direction.get('west'), 100, 'mallard'));
     gameState.addEntity(new Duck(gameState, 1180, 340, 'walk', Direction.get('northEast'), 420));
     gameState.addEntity(new Duck(gameState, 1180, 180, 'walk', Direction.get('southEast'), 160));
-    gameState.addEntity(new Duck(gameState, 1450, 320, 'walk', Direction.get('southWest'), 320));
+    gameState.addEntity(new Duck(gameState, 1450, 320, 'walk', Direction.get('southWest'), 320, 'mallard'));
     gameState.addEntity(new Duck(gameState, 1500, 340, 'walk', Direction.get('southWest'), 340));
-    gameState.addEntity(new Duck(gameState, 1550, 360, 'walk', Direction.get('southWest'), 330));
+    gameState.addEntity(new Duck(gameState, 1550, 360, 'walk', Direction.get('southWest'), 330, 'mallard'));
 
     this.cameras.main.setSize(1600, 1200);
 
