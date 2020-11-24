@@ -1,4 +1,5 @@
 import sys
+import math
 import bpy
 import mathutils
 from PIL import Image
@@ -22,6 +23,7 @@ def update_camera(camera, focus_point=mathutils.Vector((0.0, 0.0, 0.0)), distanc
     rot_quat = looking_direction.to_track_quat('Z', 'Y')
 
     camera.rotation_euler = rot_quat.to_euler()
+    camera.rotation_euler[0] = math.radians(54.736) # angle for isometric projection
     #camera.location = rot_quat * mathutils.Vector((0.0, 0.0, distance))
 
 # update_camera(bpy.data.objects['Camera'])
@@ -29,13 +31,15 @@ def update_camera(camera, focus_point=mathutils.Vector((0.0, 0.0, 0.0)), distanc
 
 def render_direction(direction_name, camera_x, camera_y):
     global images_created
-    filepath = f"F:/projects/duck-game/models/renders/test-{images_created}.png"
+    filepath = f"F:/projects/duck-game/models/renders/{images_created}.png"
     cam = bpy.data.cameras.new(f"Camera-{direction_name}")
     cam.lens = 18
+    cam.type = 'ORTHO'
+    cam.ortho_scale = 0.9
 
     # create the first camera object
     cam_obj = bpy.data.objects.new(f"CameraObj-{direction_name}", cam)
-    cam_obj.location = (camera_x, camera_y, 0.8)
+    cam_obj.location = (camera_x, camera_y, 0.5)
     cam_obj.rotation_euler = (0, 0, 0)
     scn.collection.objects.link(cam_obj)
 
@@ -49,14 +53,15 @@ def render_direction(direction_name, camera_x, camera_y):
     return filepath
 
 def render_frames(files):
-    files.append(render_direction("W", -.5, 0))
-    files.append(render_direction("NW", -.5, -.5))
-    files.append(render_direction("N", 0, -.5))
-    files.append(render_direction("NE", .5, -.5))
-    files.append(render_direction("E", .5, 0))
-    files.append(render_direction("SE", .5, .5))
-    files.append(render_direction("S", 0, .5))
-    files.append(render_direction("SW", -.5, .5))
+    offset = 0.4
+    files.append(render_direction("W", -offset, 0))
+    files.append(render_direction("NW", -offset, -offset))
+    files.append(render_direction("N", 0, -offset))
+    files.append(render_direction("NE", offset, -offset))
+    files.append(render_direction("E", offset, 0))
+    files.append(render_direction("SE", offset, offset))
+    files.append(render_direction("S", 0, offset))
+    files.append(render_direction("SW", -offset, offset))
 
 def renderDuck(skin_name):
     texture_image = bpy.data.images[f"duck-texture-{skin_name}"]
