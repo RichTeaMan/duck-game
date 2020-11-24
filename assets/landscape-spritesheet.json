@@ -1,0 +1,14 @@
+{ "columns":8,
+ "image":"landscape-spritesheet.png",
+ "imageheight":1600,
+ "imagewidth":1056,
+ "margin":0,
+ "name":"landscape-spritesheet",
+ "spacing":0,
+ "tilecount":128,
+ "tiledversion":"1.4.3",
+ "tileheight":100,
+ "tilewidth":132,
+ "type":"tileset",
+ "version":1.4
+}
