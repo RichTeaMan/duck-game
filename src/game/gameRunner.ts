@@ -36,13 +36,11 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
 };
 
 function preload() {
-    this.load.json('map', 'assets/tests/iso/isometric-water.json');
-    this.load.spritesheet('tiles', 'assets/tests/iso/isometric-grass-and-water.png', { frameWidth: 64, frameHeight: 64 });
-    this.load.spritesheet('skeleton', 'assets/tests/iso/skeleton8.png', { frameWidth: 128, frameHeight: 128 });
-    this.load.image('house', 'assets/tests/iso/rem_0002.png');
+    this.load.json('pond-map', 'assets/pond.json');
     this.load.image('water', 'assets/water.png');
     this.load.spritesheet('duck', 'assets/duck-white-spritesheet.png', { frameWidth: 128, frameHeight: 128 });
     this.load.spritesheet('mallard', 'assets/duck-mallard-spritesheet.png', { frameWidth: 128, frameHeight: 128 });
+    this.load.spritesheet('landscape-tileset', 'assets/landscape-spritesheet.png', { frameWidth: 132, frameHeight: 100 });
 
     this.load.image('bread', 'assets/bread_NW.png');
 }
@@ -59,30 +57,30 @@ function create() {
         Food.createBread(gameState, x, y);
     }, this);
 
-    //  Our Skeleton class
-
-
     buildWater();
-    //buildMap();
-    //placeHouses();
 
-    gameState.addEntity(new Duck(gameState, 240, 290, 'walk', Direction.get('southEast'), 100));
-    gameState.addEntity(new Duck(gameState, 100, 380, 'walk', Direction.get('southEast'), 230));
-    gameState.addEntity(new Duck(gameState, 620, 140, 'walk', Direction.get('south'), 380));
-    gameState.addEntity(new Duck(gameState, 460, 180, 'walk', Direction.get('south'), 150));
-    gameState.addEntity(new Duck(gameState, 760, 100, 'walk', Direction.get('southEast'), 670));
-    gameState.addEntity(new Duck(gameState, 800, 140, 'walk', Direction.get('northWest'), 800, 'mallard'));
-    gameState.addEntity(new Duck(gameState, 750, 480, 'walk', Direction.get('east'), 200));
-    gameState.addEntity(new Duck(gameState, 1030, 300, 'walk', Direction.get('west'), 100, 'mallard'));
-    gameState.addEntity(new Duck(gameState, 1180, 340, 'walk', Direction.get('northEast'), 420));
-    gameState.addEntity(new Duck(gameState, 1180, 180, 'walk', Direction.get('southEast'), 160));
-    gameState.addEntity(new Duck(gameState, 1450, 320, 'walk', Direction.get('southWest'), 320, 'mallard'));
-    gameState.addEntity(new Duck(gameState, 1500, 340, 'walk', Direction.get('southWest'), 340));
-    gameState.addEntity(new Duck(gameState, 1550, 360, 'walk', Direction.get('southWest'), 330, 'mallard'));
+    const x_offset = 1750;
+    const y_offset = 600;
 
-    this.cameras.main.setSize(1600, 1200);
+    gameState.addEntity(new Duck(gameState, x_offset + 240, y_offset + 490, 'walk', Direction.get('southEast'), 100));
+    gameState.addEntity(new Duck(gameState, x_offset + 100, y_offset + 580, 'walk', Direction.get('southEast'), 230));
+    gameState.addEntity(new Duck(gameState, x_offset + 620, y_offset + 340, 'walk', Direction.get('south'), 380));
+    gameState.addEntity(new Duck(gameState, x_offset + 460, y_offset + 380, 'walk', Direction.get('south'), 150));
+    gameState.addEntity(new Duck(gameState, x_offset + 760, y_offset + 300, 'walk', Direction.get('southEast'), 670));
+    gameState.addEntity(new Duck(gameState, x_offset + 800, y_offset + 340, 'walk', Direction.get('northWest'), 800, 'mallard'));
+    gameState.addEntity(new Duck(gameState, x_offset + 750, y_offset + 680, 'walk', Direction.get('east'), 200));
+    gameState.addEntity(new Duck(gameState, x_offset + 1030, y_offset + 500, 'walk', Direction.get('west'), 100, 'mallard'));
+    gameState.addEntity(new Duck(gameState, x_offset + 1180, y_offset + 540, 'walk', Direction.get('northEast'), 420));
+    gameState.addEntity(new Duck(gameState, x_offset + 1180, y_offset + 380, 'walk', Direction.get('southEast'), 160));
+    gameState.addEntity(new Duck(gameState, x_offset + 1450, y_offset + 520, 'walk', Direction.get('southWest'), 320, 'mallard'));
+    gameState.addEntity(new Duck(gameState, x_offset + 1500, y_offset + 540, 'walk', Direction.get('southWest'), 340));
+    gameState.addEntity(new Duck(gameState, x_offset + 1550, y_offset + 560, 'walk', Direction.get('southWest'), 330, 'mallard'));
 
-    // this.cameras.main.scrollX = 800;
+    gameState.scene.cameras.main.setSize(1600, 1200);
+
+    gameState.scene.cameras.main.scrollX = x_offset;
+    gameState.scene.cameras.main.scrollY = y_offset;
+    gameState.scene.cameras.main.zoom = 0.75;
 }
 
 function update() {
@@ -92,7 +90,7 @@ function update() {
 
 function buildWater() {
     //  Parse the data out of the map
-    var data = gameState.scene.cache.json.get('map');
+    var data = gameState.scene.cache.json.get('pond-map');
 
     var tilewidth = data.tilewidth;
     var tileheight = data.tileheight;
@@ -117,67 +115,14 @@ function buildWater() {
             var tx = (x - y) * tileWidthHalf;
             var ty = (x + y) * tileHeightHalf;
 
-            var tile = gameState.scene.add.image(centerX + tx, centerY + ty, 'water');
+            var tile = gameState.scene.add.image(centerX + tx, centerY + ty, 'landscape-tileset', id);
 
-            tile.depth = 200;
-            //tile.depth = centerY + ty;
+            tile.depth = centerY + ty;
             console.log(tile.depth);
             i++;
         }
     }
 }
-
-function buildMap() {
-    //  Parse the data out of the map
-    var data = this.gameState.scene.cache.json.get('map');
-
-    var tilewidth = data.tilewidth;
-    var tileheight = data.tileheight;
-
-    tileWidthHalf = tilewidth / 2;
-    tileHeightHalf = tileheight / 2;
-
-    var layer = data.layers[0].data;
-
-    var mapwidth = data.layers[0].width;
-    var mapheight = data.layers[0].height;
-
-    var centerX = mapwidth * tileWidthHalf;
-    var centerY = 16;
-
-    var i = 0;
-
-    for (var y = 0; y < mapheight; y++) {
-        for (var x = 0; x < mapwidth; x++) {
-            const id = layer[i] - 1;
-
-            var tx = (x - y) * tileWidthHalf;
-            var ty = (x + y) * tileHeightHalf;
-
-            var tile = this.gameState.scene.add.image(centerX + tx, centerY + ty, 'tiles', id);
-
-            tile.depth = centerY + ty;
-
-            i++;
-        }
-    }
-}
-
-function placeHouses() {
-    var house = this.gameState.scene.add.image(240, 370, 'house');
-
-    house.depth = house.y + 86;
-
-    house = this.gameState.scene.add.image(1300, 290, 'house');
-
-    house.depth = house.y + 86;
-}
-
-const sceneConfig: Phaser.Types.Scenes.SettingsConfig = {
-    active: false,
-    visible: false,
-    key: 'Game',
-};
 
 export function setupGame(): Phaser.Game {
     const game = new Phaser.Game(gameConfig);
