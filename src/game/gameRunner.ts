@@ -37,24 +37,22 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
 
 function preload() {
     this.load.json('pond-map', 'assets/pond.json');
-    this.load.image('water', 'assets/water.png');
     this.load.spritesheet('duck', 'assets/duck-white-spritesheet.png', { frameWidth: 128, frameHeight: 128 });
     this.load.spritesheet('mallard', 'assets/duck-mallard-spritesheet.png', { frameWidth: 128, frameHeight: 128 });
     this.load.spritesheet('landscape-tileset', 'assets/landscape-spritesheet.png', { frameWidth: 132, frameHeight: 100 });
 
     this.load.image('bread', 'assets/bread_NW.png');
+    this.load.image('breadc', 'assets/bread_cursor.png');
 }
 
 function create() {
     gameState = new GameState(this);
 
-    this.input.setDefaultCursor('url(assets/bread_cursor.png), pointer');
+    //this.input.setDefaultCursor('url(assets/bread_cursor.png), pointer');
     this.input.on('pointerdown', function (pointer: Phaser.Input.Pointer) {
 
-        const x = pointer.x + gameState.scene.cameras.main.scrollX;
-        const y = pointer.y + gameState.scene.cameras.main.scrollY + 40;
-
-        Food.createBread(gameState, x, y);
+        const point = gameState.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
+        Food.createBread(gameState, point.x, point.y + 40);
     }, this);
 
     buildWater();
@@ -76,7 +74,7 @@ function create() {
     gameState.addEntity(new Duck(gameState, x_offset + 1500, y_offset + 540, 'walk', Direction.get('southWest'), 340));
     gameState.addEntity(new Duck(gameState, x_offset + 1550, y_offset + 560, 'walk', Direction.get('southWest'), 330, 'mallard'));
 
-    gameState.scene.cameras.main.setSize(1600, 1200);
+    //gameState.scene.cameras.main.setSize(1600, 1200);
 
     gameState.scene.cameras.main.scrollX = x_offset;
     gameState.scene.cameras.main.scrollY = y_offset;
@@ -90,35 +88,34 @@ function update() {
 
 function buildWater() {
     //  Parse the data out of the map
-    var data = gameState.scene.cache.json.get('pond-map');
+    const data = gameState.scene.cache.json.get('pond-map');
 
-    var tilewidth = data.tilewidth;
-    var tileheight = data.tileheight;
+    const tileWidth = data.tilewidth;
+    const tileHeight = data.tileheight;
 
-    tileWidthHalf = tilewidth / 2;
-    tileHeightHalf = tileheight / 2;
+    tileWidthHalf = tileWidth / 2;
+    tileHeightHalf = tileHeight / 2;
 
-    var layer = data.layers[0].data;
+    const layer = data.layers[0].data;
 
-    var mapwidth = data.layers[0].width;
-    var mapheight = data.layers[0].height;
+    const mapWidth = data.layers[0].width;
+    const mapHeight = data.layers[0].height;
 
-    var centerX = mapwidth * tileWidthHalf;
-    var centerY = 16;
+    const centerX = mapWidth * tileWidthHalf;
+    const centerY = 32;
 
-    var i = 0;
+    let i = 0;
 
-    for (var y = 0; y < mapheight; y++) {
-        for (var x = 0; x < mapwidth; x++) {
+    for (let y = 0; y < mapHeight; y++) {
+        for (let x = 0; x < mapWidth; x++) {
             const id = layer[i] - 1;
 
-            var tx = (x - y) * tileWidthHalf;
-            var ty = (x + y) * tileHeightHalf;
+            const tx = (x - y) * tileWidthHalf;
+            const ty = (x + y) * tileHeightHalf;
 
-            var tile = gameState.scene.add.image(centerX + tx, centerY + ty, 'landscape-tileset', id);
+            const tile = gameState.scene.add.image(centerX + tx, centerY + ty, 'landscape-tileset', id);
 
             tile.depth = centerY + ty;
-            console.log(tile.depth);
             i++;
         }
     }

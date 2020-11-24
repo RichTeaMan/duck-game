@@ -97,7 +97,7 @@ export class Duck extends Entity {
     changeFrame() {
 
         let delay = this.anim.speed;
-        this.image.depth = this.y + 64;
+        this.image.depth = this.y + 256;
 
         if (this.f > this.anim.endFrame || this.f < 0) {
             switch (this.motion) {
@@ -138,6 +138,7 @@ export class Duck extends Entity {
     update() {
         if (!this.active)
             return;
+        this.image.depth = this.y + 256;
 
         // is there bread close by?
         if (this.target == null && this.gameState.fetchFood().length > 0) {
@@ -183,6 +184,7 @@ export class Duck extends Entity {
 
             this.x += modX;
             this.y += modY;
+            this.image.depth = this.y + 256;
         }
         else {
 
@@ -190,7 +192,7 @@ export class Duck extends Entity {
 
             if (this.direction.y !== 0) {
                 this.y += this.direction.y * this.speed;
-                this.image.depth = this.y + 64;
+                this.image.depth = this.y + 128;
             }
 
             //  Walked far enough?
