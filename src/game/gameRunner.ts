@@ -3,12 +3,9 @@ import { Direction } from './direction';
 import { Duck } from './duck';
 import { Food } from './food';
 import { GameState } from './gameState';
-import { PlayerDuck } from './playerDuck';
 
 let tileWidthHalf;
 let tileHeightHalf;
-
-let d = 0;
 
 let gameState: GameState;
 
@@ -69,7 +66,6 @@ function create() {
     //buildMap();
     //placeHouses();
 
-    gameState.addEntity(new PlayerDuck(gameState, 600, 200, 'walk', Direction.get('east'), 100));
     gameState.addEntity(new Duck(gameState, 240, 290, 'walk', Direction.get('southEast'), 100));
     gameState.addEntity(new Duck(gameState, 100, 380, 'walk', Direction.get('southEast'), 230));
     gameState.addEntity(new Duck(gameState, 620, 140, 'walk', Direction.get('south'), 380));
@@ -92,23 +88,6 @@ function create() {
 function update() {
     gameState.update();
     gameState.pruneEntities();
-
-    // return;
-
-    if (d) {
-        this.cameras.main.scrollX -= 0.5;
-
-        if (this.cameras.main.scrollX <= 0) {
-            d = 0;
-        }
-    }
-    else {
-        this.cameras.main.scrollX += 0.5;
-
-        if (this.cameras.main.scrollX >= 800) {
-            d = 1;
-        }
-    }
 }
 
 function buildWater() {
