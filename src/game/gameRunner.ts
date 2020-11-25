@@ -56,6 +56,8 @@ function preload() {
     scene.load.image('breadc', 'assets/bread_cursor.png');
 
     scene.load.image('debug', 'assets/debug.png');
+
+    scene.load.audio('quackquack-f', 'assets/quackquack-f.mp3');
 }
 
 function create() {

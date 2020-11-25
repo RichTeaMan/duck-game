@@ -160,6 +160,11 @@ export class Duck extends Entity {
         if (!this.active)
             return;
 
+        // 0.05% chance to quack
+        if (randomInt(2000) === 1) {
+            this.gameState.scene.sound.add('quackquack-f').play();
+        }
+
         // find a target
         if (this.target == null || this.target.isDestroyed || this.target.entityType() !== EntityType.Food) {
 
