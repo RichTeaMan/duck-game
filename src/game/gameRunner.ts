@@ -34,9 +34,14 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
     scene: {
         preload: preload,
         create: create,
-        update: update
+        update: update,
+        pack: {
+            files: [
+                { type: 'json', key: 'building-data', url: 'assets/buildings.json' }
+            ]
+        }
     },
-    backgroundColor: '#000000',
+    backgroundColor: '#000000', // 8AB549
 };
 
 window.addEventListener("resize", () => {
@@ -46,7 +51,7 @@ window.addEventListener("resize", () => {
 function preload() {
     const scene = this as Phaser.Scene;
 
-    scene.load.json('pond-map', 'assets/pond.json');
+    scene.load.json('pond-map', 'assets/city-pond.json');
     scene.load.spritesheet('duck-white', 'assets/duck-white-spritesheet.png', { frameWidth: 128, frameHeight: 128 });
     scene.load.spritesheet('duck-mallard', 'assets/duck-mallard-spritesheet.png', { frameWidth: 128, frameHeight: 128 });
     scene.load.spritesheet('landscape-tileset', 'assets/landscape-spritesheet.png', { frameWidth: 132, frameHeight: 100 });
@@ -56,6 +61,12 @@ function preload() {
     scene.load.image('breadc', 'assets/bread_cursor.png');
 
     scene.load.image('debug', 'assets/debug.png');
+
+    const buildingData = scene.cache.json.get('building-data');
+    for (let i = 0; i < buildingData.tilecount; i++) {
+        const tile = buildingData.tiles[i];
+        scene.load.image(`building-${i}`, `assets/${tile.image}`);
+    }
 }
 
 function create() {
@@ -70,8 +81,8 @@ function create() {
 
     buildWater();
 
-    const x_offset = 1750;
-    const y_offset = 600;
+    const x_offset = 4550;
+    const y_offset = 2000;
 
     const startDucks = 7;
     for (let i = 0; i < startDucks; i++) {
@@ -101,44 +112,51 @@ function buildWater() {
     tileWidthHalf = tileWidth / 2;
     tileHeightHalf = tileHeight / 2;
 
-    const layer = data.layers[0].data;
+    //for (int layerI = )
+    {
+        const layer = data.layers[0].data;
 
-    const mapWidth = data.layers[0].width;
-    const mapHeight = data.layers[0].height;
+        const mapWidth = data.layers[0].width;
+        const mapHeight = data.layers[0].height;
 
-    const centerX = mapWidth * tileWidthHalf;
-    const centerY = 32;
+        const centerX = mapWidth * tileWidthHalf;
+        const centerY = 32;
 
-    let i = 0;
-
-    for (let y = 0; y < mapHeight; y++) {
-        if (y % 2 === 0) {
-            //continue;
-        }
-        for (let x = 0; x < mapWidth; x++) {
-            const id = layer[i] - 1;
-
-            const tx = (x - y) * tileWidthHalf;
-            const ty = (x + y) * tileHeightHalf;
-
-            let tile: Phaser.GameObjects.Image;
-
-            // 53 is water
-            if (id === 53) {
-                //tile = gameState.scene.add.image(centerX + tx, centerY + ty, 'debug');
-
-                // DIRTY HACK - the spritesheet has bleeding in some cases (specifically, I think the sheet is fine, but reading it somehow causes alignment problems).
-                // Usually it's fine but water gets particular ugly at different zoom levels, so swap in a pure tile.
-                tile = gameState.scene.add.image(centerX + tx, centerY + ty, 'water');
-                //tile.setVisible(false);
-                gameState.waterTiles.push(tile);
-            } else {
-                tile = gameState.scene.add.image(centerX + tx, centerY + ty, 'landscape-tileset', id);
+        let i = 0;
+        for (let y = 0; y < mapHeight; y++) {
+            if (y % 2 === 0) {
+                //continue;
             }
-            console.log(`${tile.x}, ${tile.y} - ${tile.width}, ${tile.height}`);
+            for (let x = 0; x < mapWidth; x++) {
+                const tx = (x - y) * tileWidthHalf;
+                const ty = (x + y) * tileHeightHalf;
 
-            tile.depth = centerY + ty;
-            i++;
+                let tile: Phaser.GameObjects.Image;
+
+                if (layer[i] > 130) {
+                    const id = layer[i] - 130; //data.tilesets[0].firstgid;
+                    // 53 is water
+                    if (id === 53) {
+                        //tile = gameState.scene.add.image(centerX + tx, centerY + ty, 'debug');
+
+                        // DIRTY HACK - the spritesheet has bleeding in some cases (specifically, I think the sheet is fine, but reading it somehow causes alignment problems).
+                        // Usually it's fine but water gets particular ugly at different zoom levels, so swap in a pure tile.
+                        tile = gameState.scene.add.image(centerX + tx, centerY + ty, 'water');
+                        //tile.setVisible(false);
+                        gameState.waterTiles.push(tile);
+                    } else {
+                        tile = gameState.scene.add.image(centerX + tx, centerY + ty, 'landscape-tileset', id);
+                    }
+                }
+                else {
+                    const buildingId = `building-${layer[i]}`;
+                    tile = gameState.scene.add.image(centerX + tx, centerY + ty, buildingId);
+                }
+                console.log(`${tile.x}, ${tile.y} - ${tile.width}, ${tile.height}`);
+
+                tile.depth = centerY + ty;
+                i++;
+            }
         }
     }
     console.log(`${gameState.waterTiles.length} water tiles.`)
