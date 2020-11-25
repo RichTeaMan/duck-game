@@ -183,6 +183,7 @@ export class Duck extends Entity {
 
                 this.vector = this.vectorToEntity(this.target, 1);
             }
+            this.direction = Direction.determineFromVector(this.vector);
         }
 
         if (this.distanceFromEntity(this.target) < 2.5) {
