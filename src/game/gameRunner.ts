@@ -61,7 +61,7 @@ function preload() {
 function create() {
     gameState = new GameState(this);
 
-    //this.input.setDefaultCursor('url(assets/bread_cursor.png), pointer');
+    this.input.setDefaultCursor('url(assets/bread_cursor.png), pointer');
     this.input.on('pointerdown', function (pointer: Phaser.Input.Pointer) {
 
         const point = gameState.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);

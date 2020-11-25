@@ -1,5 +1,3 @@
-import { Dir } from "fs";
-import { VectorFactory } from "matter";
 import { randomInt } from "./utils";
 
 export class Direction {
