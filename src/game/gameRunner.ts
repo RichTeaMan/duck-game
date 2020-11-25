@@ -68,10 +68,10 @@ function create() {
         Food.createBread(gameState, point.x, point.y + 40);
     }, this);
 
-    buildWater();
+    buildMap();
 
-    const x_offset = 1750;
-    const y_offset = 600;
+    const x_offset = 4550;
+    const y_offset = 2000;
 
     const startDucks = 7;
     for (let i = 0; i < startDucks; i++) {
@@ -91,7 +91,7 @@ function update() {
     gameState.pruneEntities();
 }
 
-function buildWater() {
+function buildMap() {
     //  Parse the data out of the map
     const data = gameState.scene.cache.json.get('pond-map');
 
