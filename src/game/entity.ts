@@ -7,7 +7,6 @@ export abstract class Entity {
     isDestroyed = false;
 
     constructor(gameState: GameState, imageName: string, x: number, y: number) {
-        console.log(`Entity: ${x}, ${y}`);
         this.image = gameState.scene.add.image(x, y, imageName);
     }
 

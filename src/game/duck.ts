@@ -13,7 +13,7 @@ const duckAnims = {
     walk: {
         startFrame: 0,
         endFrame: 4,
-        speed: 0.10
+        speed: 0.40 // 0.10
     },
     feed: {
         startFrame: 5,
@@ -32,15 +32,21 @@ const duckAnims = {
     }
 };
 
-export class Duck extends Entity {
+export class DuckType {
+    static duckTypes = [
+        "white",
+        "mallard"];
 
-    startX: number;
-    startY: number;
-    distance: number;
+    static random() {
+        return DuckType.duckTypes[randomInt(DuckType.duckTypes.length)];
+    }
+}
+
+export class Duck extends Entity {
 
     motion: any;
     anim: any;
-    direction: Direction;
+    direction: Direction = Direction.random();
     speed: number;
 
     /**
@@ -56,15 +62,13 @@ export class Duck extends Entity {
 
     active = true;
 
-    constructor(gameState: GameState, x: number, y: number, motion, direction: Direction, distance, duckType = 'duck') {
-        super(gameState, duckType, x, y)//, direction.offset + anims[motion].startFrame)
+    idleTicks = 0;
 
-        this.startX = x;
-        this.startY = y;
-        this.distance = distance;
-        this.motion = motion;
-        this.anim = duckAnims[motion];
-        this.direction = direction;
+    constructor(gameState: GameState, x: number, y: number, duckType: string) {
+        super(gameState, `duck-${duckType}`, x, y);
+
+        this.motion = 'walk';
+        this.anim = duckAnims[this.motion];
         this.speed = this.anim.speed;
         this.f = this.anim.startFrame;
         this.gameState = gameState;
@@ -135,6 +139,21 @@ export class Duck extends Entity {
         //scene.time.delayedCall(this.anim.speed * 1000, this.changeFrame, [], this);
     }
 
+    /**
+     * Moves the duck by the given amount, or returns false is fuck a movement isn't possible.
+     * @param modX Amount to move duck by.
+     * @param modY Amount to move duck by.
+     */
+    move(modX: number, modY: number): boolean {
+
+        if (this.gameState.isPointWater(this.x + modX, this.y + modY)) {
+            this.x += modX;
+            this.y += modY;
+            return true;
+        }
+        return false;
+    }
+
     update() {
         if (!this.active)
             return;
@@ -188,19 +207,19 @@ export class Duck extends Entity {
         }
         else {
 
-            this.x += this.direction.x * this.speed;
+            const modX = this.direction.x * this.speed;
+            let modY = 0;
 
             if (this.direction.y !== 0) {
-                this.y += this.direction.y * this.speed;
+                modY = this.direction.y * this.speed;
                 this.image.depth = this.y + 128;
             }
 
             //  Walked far enough?
-            if (Phaser.Math.Distance.Between(this.startX, this.startY, this.x, this.y) >= this.distance) {
-                this.direction = this.direction.opposite;
+            if (!this.move(modX, modY) || this.idleTicks <= 0) {
+                this.idleTicks = randomInt(250);
+                this.direction = Direction.random();
                 this.image.frame = this.image.texture.get(this.direction.offset + this.f);
-                this.startX = this.x;
-                this.startY = this.y;
             }
         }
     }

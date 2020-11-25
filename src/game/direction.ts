@@ -1,3 +1,5 @@
+import { randomInt } from "./utils";
+
 export class Direction {
 
     static west: Direction;
@@ -10,6 +12,7 @@ export class Direction {
     static southWest: Direction;
 
     static map: Direction[];
+    static list: Direction[];
 
     static initialise() {
 
@@ -40,10 +43,25 @@ export class Direction {
         Direction.map[Direction.southEast.name] = Direction.southEast;
         Direction.map[Direction.south.name] = Direction.south;
         Direction.map[Direction.southWest.name] = Direction.southWest;
+
+        Direction.list = [];
+        Direction.list.push(Direction.west);
+        Direction.list.push(Direction.northWest);
+        Direction.list.push(Direction.north);
+        Direction.list.push(Direction.northEast);
+        Direction.list.push(Direction.east);
+        Direction.list.push(Direction.southEast);
+        Direction.list.push(Direction.south);
+        Direction.list.push(Direction.southWest);
     }
 
     static get(name: string): Direction {
         return Direction.map[name];
+    }
+
+    static random(): Direction {
+        const i = randomInt(Direction.list.length);
+        return Direction.list[i];
     }
 
     name: string;
