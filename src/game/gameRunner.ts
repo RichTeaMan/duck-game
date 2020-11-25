@@ -1,5 +1,4 @@
 import * as Phaser from 'phaser';
-import { Direction } from './direction';
 import { Duck, DuckType } from './duck';
 import { Food } from './food';
 import { GameState } from './gameState';
@@ -13,7 +12,7 @@ let gameState: GameState;
 const ZOOM_LEVEL = 0.4;
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
-    title: 'Sample',
+    title: 'duck-game',
 
     type: Phaser.AUTO,
     scale: {
@@ -37,13 +36,6 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
         create: create,
         update: update
     },
-    render: {
-        //pixelArt: true,
-        //roundPixels: true
-        //antialias: false,
-
-    },
-
     backgroundColor: '#000000',
 };
 
@@ -89,13 +81,9 @@ function create() {
         gameState.addEntity(new Duck(gameState, randomTile.x, randomTile.y, randomDuckType));
     }
 
-    //gameState.scene.cameras.main.setSize(1600, 1200);
-
     gameState.scene.cameras.main.scrollX = x_offset;
     gameState.scene.cameras.main.scrollY = y_offset;
     gameState.scene.cameras.main.zoom = ZOOM_LEVEL;
-
-    //gameState.debug();
 }
 
 function update() {

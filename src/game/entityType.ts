@@ -1,4 +1,5 @@
 export enum EntityType {
     Food,
-    Duck
+    Duck,
+    Invisible
 }

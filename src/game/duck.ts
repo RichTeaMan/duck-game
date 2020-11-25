@@ -2,7 +2,8 @@ import { Direction } from "./direction";
 import { Entity } from "./entity";
 import { EntityType } from "./entityType";
 import { GameState } from "./gameState";
-import { randomInt } from "./utils";
+import { InvisibleTarget } from "./invisibleTarget";
+import { randomElement, randomInt } from "./utils";
 
 const duckAnims = {
     idle: {
@@ -13,7 +14,7 @@ const duckAnims = {
     walk: {
         startFrame: 0,
         endFrame: 4,
-        speed: 0.40 // 0.10
+        speed:  0.10
     },
     feed: {
         startFrame: 5,
@@ -55,6 +56,7 @@ export class Duck extends Entity {
     f: number;
 
     target: Entity = null;
+    vector: Phaser.Math.Vector2 = null;
 
     gameState: GameState;
 
@@ -157,70 +159,44 @@ export class Duck extends Entity {
     update() {
         if (!this.active)
             return;
-        this.image.depth = this.y + 256;
 
-        // is there bread close by?
-        if (this.target == null && this.gameState.fetchFood().length > 0) {
-            const breadList = this.gameState.fetchFood().map(f => ({ distance: this.distanceFromEntity(f) + randomInt(30), target: f }));
-            const select = breadList.sort(f => f.distance).reverse()[0];
-            if (select.distance < 250) {
-                this.target = select.target;
+        // find a target
+        if (this.target == null || this.target.isDestroyed || this.target.entityType() !== EntityType.Food) {
+
+            // look for food
+            if (this.gameState.fetchFood().length > 0) {
+                const breadList = this.gameState.fetchFood().map(f => ({ distance: this.distanceFromEntity(f) + randomInt(30), target: f }));
+                const select = breadList.sort(f => f.distance).reverse()[0];
+                if (select.distance < 250) {
+
+                    this.target?.destroy();
+                    this.target = select.target;
+                    this.vector = this.vectorToEntity(this.target, 5);
+                }
+            }
+
+            // find a random point to swim too
+            if (this.target == null) {
+                // no bread, swim to random target
+                const waterTile = randomElement(this.gameState.waterTiles);
+                this.target = this.gameState.addEntity(new InvisibleTarget(this.gameState, waterTile.x, waterTile.y));
+
+                this.vector = this.vectorToEntity(this.target, 1);
             }
         }
 
-        if (this.target) {
-            if (this.target.isDestroyed) {
-                this.target = null;
-                return;
-            }
+        if (this.distanceFromEntity(this.target) < 2.5) {
+            this.target.destroy();
 
-            if (this.distanceFromEntity(this.target) < 2.5) {
-                this.target.destroy();
-
-                // feed animation
+            if (this.target.entityType() === EntityType.Food) {
                 this.startFeedAnimation();
-                return;
             }
-
-            const velocity = 0.05;
-            const dx = this.target.x - this.x;
-            const dy = this.target.y - this.y;
-
-            const angle = Math.atan(Math.abs(dx) / Math.abs(dy));
-            let xR = Math.cos(angle);
-            let yR = Math.sin(angle);
-
-            const total = xR + yR;
-            const modX = (dx / total) * velocity;
-            const modY = (dy / total) * velocity;
-
-            if (dx < 0 && xR > 0) {
-                xR = -xR;
-            }
-            if (dy < 0 && yR > 0) {
-                yR = -yR;
-            }
-
-            this.x += modX;
-            this.y += modY;
-            this.image.depth = this.y + 256;
+            this.target = null;
+            return;
         }
-        else {
 
-            const modX = this.direction.x * this.speed;
-            let modY = 0;
-
-            if (this.direction.y !== 0) {
-                modY = this.direction.y * this.speed;
-                this.image.depth = this.y + 128;
-            }
-
-            //  Walked far enough?
-            if (!this.move(modX, modY) || this.idleTicks <= 0) {
-                this.idleTicks = randomInt(250);
-                this.direction = Direction.random();
-                this.image.frame = this.image.texture.get(this.direction.offset + this.f);
-            }
-        }
+        this.x += this.vector.x;
+        this.y += this.vector.y;
+        this.image.depth = this.y + 128;
     }
 }

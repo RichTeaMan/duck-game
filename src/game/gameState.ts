@@ -9,6 +9,10 @@ export class GameState {
     entities: Array<Entity> = [];
     waterTiles: Array<Phaser.GameObjects.Image> = [];
 
+    debug = {
+        showTargets: false
+    }
+
     constructor(scene: Phaser.Scene) {
         this.scene = scene;
         this.cursors = scene.input.keyboard.createCursorKeys();
@@ -32,15 +36,16 @@ export class GameState {
     }
 
     fetchFood(): Food[] {
-        return this.entities.filter(e => e.entityType() === EntityType.Food) as Food[];
+        return this.entities.filter(e => e.entityType() === EntityType.Food && !e.isDestroyed) as Food[];
     }
 
     addEntity(entity: Entity) {
 
         this.entities.push(entity);
+        return entity;
     }
 
-    debug() {
+    showWaterCollision() {
         for (let i = 0; i < this.waterTiles.length; i++) {
             const tile = this.waterTiles[i];
             const r = tile.getBounds();
