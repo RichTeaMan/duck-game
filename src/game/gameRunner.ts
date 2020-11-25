@@ -1,18 +1,24 @@
 import * as Phaser from 'phaser';
 import { Direction } from './direction';
-import { Duck } from './duck';
+import { Duck, DuckType } from './duck';
 import { Food } from './food';
 import { GameState } from './gameState';
+import { randomInt } from './utils';
 
 let tileWidthHalf;
 let tileHeightHalf;
 
 let gameState: GameState;
 
+const ZOOM_LEVEL = 0.4;
+
 const gameConfig: Phaser.Types.Core.GameConfig = {
     title: 'Sample',
 
     type: Phaser.AUTO,
+    scale: {
+        mode: Phaser.Scale.FIT,
+    },
 
     parent: "game-container",
     width: 1600,
@@ -31,18 +37,33 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
         create: create,
         update: update
     },
+    render: {
+        //pixelArt: true,
+        //roundPixels: true
+        //antialias: false,
+
+    },
 
     backgroundColor: '#000000',
 };
 
-function preload() {
-    this.load.json('pond-map', 'assets/pond.json');
-    this.load.spritesheet('duck', 'assets/duck-white-spritesheet.png', { frameWidth: 128, frameHeight: 128 });
-    this.load.spritesheet('mallard', 'assets/duck-mallard-spritesheet.png', { frameWidth: 128, frameHeight: 128 });
-    this.load.spritesheet('landscape-tileset', 'assets/landscape-spritesheet.png', { frameWidth: 132, frameHeight: 100 });
+window.addEventListener("resize", () => {
+    gameState.scene.game.scale.resize(window.innerWidth / ZOOM_LEVEL, window.innerHeight / ZOOM_LEVEL);
+}, false);
 
-    this.load.image('bread', 'assets/bread_NW.png');
-    this.load.image('breadc', 'assets/bread_cursor.png');
+function preload() {
+    const scene = this as Phaser.Scene;
+
+    scene.load.json('pond-map', 'assets/pond.json');
+    scene.load.spritesheet('duck-white', 'assets/duck-white-spritesheet.png', { frameWidth: 128, frameHeight: 128 });
+    scene.load.spritesheet('duck-mallard', 'assets/duck-mallard-spritesheet.png', { frameWidth: 128, frameHeight: 128 });
+    scene.load.spritesheet('landscape-tileset', 'assets/landscape-spritesheet.png', { frameWidth: 132, frameHeight: 100 });
+    scene.load.spritesheet('water', 'assets/landscapeTiles_066.png', { frameWidth: 132, frameHeight: 100 });
+
+    scene.load.image('bread', 'assets/bread_NW.png');
+    scene.load.image('breadc', 'assets/bread_cursor.png');
+
+    scene.load.image('debug', 'assets/debug.png');
 }
 
 function create() {
@@ -60,25 +81,21 @@ function create() {
     const x_offset = 1750;
     const y_offset = 600;
 
-    gameState.addEntity(new Duck(gameState, x_offset + 240, y_offset + 490, 'walk', Direction.get('southEast'), 100));
-    gameState.addEntity(new Duck(gameState, x_offset + 100, y_offset + 580, 'walk', Direction.get('southEast'), 230));
-    gameState.addEntity(new Duck(gameState, x_offset + 620, y_offset + 340, 'walk', Direction.get('south'), 380));
-    gameState.addEntity(new Duck(gameState, x_offset + 460, y_offset + 380, 'walk', Direction.get('south'), 150));
-    gameState.addEntity(new Duck(gameState, x_offset + 760, y_offset + 300, 'walk', Direction.get('southEast'), 670));
-    gameState.addEntity(new Duck(gameState, x_offset + 800, y_offset + 340, 'walk', Direction.get('northWest'), 800, 'mallard'));
-    gameState.addEntity(new Duck(gameState, x_offset + 750, y_offset + 680, 'walk', Direction.get('east'), 200));
-    gameState.addEntity(new Duck(gameState, x_offset + 1030, y_offset + 500, 'walk', Direction.get('west'), 100, 'mallard'));
-    gameState.addEntity(new Duck(gameState, x_offset + 1180, y_offset + 540, 'walk', Direction.get('northEast'), 420));
-    gameState.addEntity(new Duck(gameState, x_offset + 1180, y_offset + 380, 'walk', Direction.get('southEast'), 160));
-    gameState.addEntity(new Duck(gameState, x_offset + 1450, y_offset + 520, 'walk', Direction.get('southWest'), 320, 'mallard'));
-    gameState.addEntity(new Duck(gameState, x_offset + 1500, y_offset + 540, 'walk', Direction.get('southWest'), 340));
-    gameState.addEntity(new Duck(gameState, x_offset + 1550, y_offset + 560, 'walk', Direction.get('southWest'), 330, 'mallard'));
+    const startDucks = 7;
+    for (let i = 0; i < startDucks; i++) {
+        const randomTile = gameState.waterTiles[randomInt(gameState.waterTiles.length)];
+        const randomDuckType = DuckType.random();
+
+        gameState.addEntity(new Duck(gameState, randomTile.x, randomTile.y, randomDuckType));
+    }
 
     //gameState.scene.cameras.main.setSize(1600, 1200);
 
     gameState.scene.cameras.main.scrollX = x_offset;
     gameState.scene.cameras.main.scrollY = y_offset;
-    gameState.scene.cameras.main.zoom = 0.75;
+    gameState.scene.cameras.main.zoom = ZOOM_LEVEL;
+
+    //gameState.debug();
 }
 
 function update() {
@@ -107,18 +124,36 @@ function buildWater() {
     let i = 0;
 
     for (let y = 0; y < mapHeight; y++) {
+        if (y % 2 === 0) {
+            //continue;
+        }
         for (let x = 0; x < mapWidth; x++) {
             const id = layer[i] - 1;
 
             const tx = (x - y) * tileWidthHalf;
             const ty = (x + y) * tileHeightHalf;
 
-            const tile = gameState.scene.add.image(centerX + tx, centerY + ty, 'landscape-tileset', id);
+            let tile: Phaser.GameObjects.Image;
+
+            // 53 is water
+            if (id === 53) {
+                //tile = gameState.scene.add.image(centerX + tx, centerY + ty, 'debug');
+
+                // DIRTY HACK - the spritesheet has bleeding in some cases (specifically, I think the sheet is fine, but reading it somehow causes alignment problems).
+                // Usually it's fine but water gets particular ugly at different zoom levels, so swap in a pure tile.
+                tile = gameState.scene.add.image(centerX + tx, centerY + ty, 'water');
+                //tile.setVisible(false);
+                gameState.waterTiles.push(tile);
+            } else {
+                tile = gameState.scene.add.image(centerX + tx, centerY + ty, 'landscape-tileset', id);
+            }
+            console.log(`${tile.x}, ${tile.y} - ${tile.width}, ${tile.height}`);
 
             tile.depth = centerY + ty;
             i++;
         }
     }
+    console.log(`${gameState.waterTiles.length} water tiles.`)
 }
 
 export function setupGame(): Phaser.Game {
