@@ -6,11 +6,6 @@ import { InvisibleTarget } from "./invisibleTarget";
 import { randomElement, randomInt } from "./utils";
 
 const duckAnims = {
-    idle: {
-        startFrame: 0,
-        endFrame: 4,
-        speed: 0.2
-    },
     walk: {
         startFrame: 0,
         endFrame: 4,
@@ -24,12 +19,17 @@ const duckAnims = {
     quack: {
         startFrame: 8,
         endFrame: 10,
-        speed: 0.8
+        speed: 0.6
     },
-    shoot: {
-        startFrame: 28,
-        endFrame: 32,
-        speed: 0.1
+    stand: {
+        startFrame: 11,
+        endFrame: 13,
+        speed: 0.2
+    },
+    standFlap: {
+        startFrame: 14,
+        endFrame: 16,
+        speed: 0.2
     }
 };
 
@@ -109,6 +109,24 @@ export class Duck extends Entity {
         this.active = false;
     }
 
+    startStandAnimation() {
+        this.f = duckAnims['stand'].startFrame;
+        this.anim = duckAnims['stand'];
+        this.animationStep = 1;
+        this.motion = 'stand';
+        this.changeFrame();
+        this.active = true;
+    }
+
+    startStandFlapAnimation() {
+        this.f = duckAnims['standFlap'].startFrame;
+        this.anim = duckAnims['standFlap'];
+        this.animationStep = 1;
+        this.motion = 'standFlap';
+        this.changeFrame();
+        this.active = true;
+    }
+
     changeFrame() {
 
         let delay = this.anim.speed;
@@ -139,14 +157,12 @@ export class Duck extends Entity {
                     this.gameState.scene.time.delayedCall(delay * 1000, this.startWalkAnimation, [], this);
                     break;
 
-                case 'idle':
-                    delay = 0.5 + Math.random();
-                    this.gameState.scene.time.delayedCall(delay * 1000, this.resetAnimation, [], this);
-                    break;
-
-                case 'die':
-                    delay = 6 + Math.random() * 6;
-                    this.gameState.scene.time.delayedCall(delay * 1000, this.resetAnimation, [], this);
+                case 'stand':
+                    this.startStandFlapAnimation();
+                    return;
+                case 'standFlap':
+                    this.f = this.anim.startFrame;
+                    localF = this.f;
                     break;
             }
         }
@@ -154,14 +170,6 @@ export class Duck extends Entity {
         this.image.frame = this.image.texture.get(this.direction.offset + localF);
         this.gameState.scene.time.delayedCall(delay * 1000, this.changeFrame, [], this);
         this.f += this.animationStep;
-    }
-
-    resetAnimation() {
-        //this.f = this.anim.startFrame;
-
-        //this.frame = this.texture.get(this.direction.offset + this.f);
-
-        //scene.time.delayedCall(this.anim.speed * 1000, this.changeFrame, [], this);
     }
 
     /**
@@ -201,6 +209,7 @@ export class Duck extends Entity {
                     this.target?.destroy();
                     this.target = select.target;
                     this.vector = this.vectorToEntity(this.target, 5);
+                    this.startStandAnimation();
                 }
             }
 
@@ -211,6 +220,7 @@ export class Duck extends Entity {
                 this.target = this.gameState.addEntity(new InvisibleTarget(this.gameState, waterTile.x, waterTile.y));
 
                 this.vector = this.vectorToEntity(this.target, 1);
+                this.startWalkAnimation();
             }
             this.direction = Direction.determineFromVector(this.vector);
         }
