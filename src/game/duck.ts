@@ -9,7 +9,7 @@ const duckAnims = {
     walk: {
         startFrame: 0,
         endFrame: 4,
-        speed: 0.10
+        speed: 0.20
     },
     feed: {
         startFrame: 5,
