@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser';
 import { GameScene } from './gameScene';
 import { GameState } from './gameState';
+import { UiScene } from './uiScene';
 
 let gameState: GameState;
 
@@ -26,7 +27,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
         },
     },
     */
-    scene: [ GameScene ],
+    scene: [ GameScene, UiScene ],
     backgroundColor: '#000000',
 };
 

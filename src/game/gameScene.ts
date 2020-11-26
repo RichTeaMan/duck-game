@@ -13,8 +13,6 @@ export class GameScene extends Phaser.Scene {
 
     constructor() {
         super('GameScene');
-
-
     }
 
     preload() {
@@ -35,12 +33,11 @@ export class GameScene extends Phaser.Scene {
     }
 
     create() {
-
-        this.gameState = new GameState(this);
+        this.gameState = GameState.singleton();
+        this.gameState.scene = this;
     
-        const gs = this.gameState;
         window.addEventListener("resize", () => {
-            gs.scene.game.scale.resize(window.innerWidth / ZOOM_LEVEL, window.innerHeight / ZOOM_LEVEL);
+            GameState.singleton().scene.game.scale.resize(window.innerWidth / ZOOM_LEVEL, window.innerHeight / ZOOM_LEVEL);
         }, false);
 
         this.input.setDefaultCursor('url(assets/bread_cursor.png), pointer');

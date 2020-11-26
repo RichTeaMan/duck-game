@@ -4,18 +4,22 @@ import { Food } from "./food";
 
 export class GameState {
 
+    private static _instance = null;
+    static singleton(): GameState {
+        if (GameState._instance == null) {
+            this._instance = new GameState();
+        }
+        return this._instance;
+    }
+
     scene: Phaser.Scene;
+    uiScene: Phaser.Scene;
     cursors: Phaser.Types.Input.Keyboard.CursorKeys;
     entities: Array<Entity> = [];
     waterTiles: Array<Phaser.GameObjects.Image> = [];
 
     debug = {
         showTargets: false
-    }
-
-    constructor(scene: Phaser.Scene) {
-        this.scene = scene;
-        this.cursors = scene.input.keyboard.createCursorKeys();
     }
 
     update() {
