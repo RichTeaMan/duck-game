@@ -14,17 +14,17 @@ const duckAnims = {
     walk: {
         startFrame: 0,
         endFrame: 4,
-        speed:  0.10
+        speed: 0.10
     },
     feed: {
         startFrame: 5,
         endFrame: 7,
         speed: 0.8
     },
-    die: {
-        startFrame: 20,
-        endFrame: 28,
-        speed: 0.2
+    quack: {
+        startFrame: 8,
+        endFrame: 10,
+        speed: 0.8
     },
     shoot: {
         startFrame: 28,
@@ -100,21 +100,44 @@ export class Duck extends Entity {
         this.active = false;
     }
 
+    startQuackAnimation() {
+        this.f = duckAnims['quack'].startFrame;
+        this.anim = duckAnims['quack'];
+        this.animationStep = 1;
+        this.motion = 'quack';
+        this.changeFrame();
+        this.active = false;
+    }
+
     changeFrame() {
 
         let delay = this.anim.speed;
         this.image.depth = this.y + 256;
+        let localF = this.f;
 
-        if (this.f > this.anim.endFrame || this.f < 0) {
+        if (this.f > this.anim.endFrame || this.f < 0 || this.f < this.anim.startFrame) {
             switch (this.motion) {
                 case 'walk':
                     this.animationStep = -this.animationStep;
                     this.f += 2 * this.animationStep;
+                    localF = this.f;
                     break;
 
                 case 'feed':
                     this.gameState.scene.time.delayedCall(delay * 1000, this.startWalkAnimation, [], this);
                     return;
+
+                case 'quack':
+                    localF = this.f - 4;
+                    if (this.f === 11) {
+                        localF = 9;
+                    }
+                    else if (this.f > 16) {
+                        this.startWalkAnimation();
+                        return;
+                    }
+                    this.gameState.scene.time.delayedCall(delay * 1000, this.startWalkAnimation, [], this);
+                    break;
 
                 case 'idle':
                     delay = 0.5 + Math.random();
@@ -128,7 +151,7 @@ export class Duck extends Entity {
             }
         }
 
-        this.image.frame = this.image.texture.get(this.direction.offset + this.f);
+        this.image.frame = this.image.texture.get(this.direction.offset + localF);
         this.gameState.scene.time.delayedCall(delay * 1000, this.changeFrame, [], this);
         this.f += this.animationStep;
     }
@@ -162,7 +185,8 @@ export class Duck extends Entity {
 
         // 0.05% chance to quack
         if (randomInt(2000) === 1) {
-            this.gameState.scene.sound.add('quackquack-f').play();
+            this.gameState.scene.sound.add('quackquack-f').play({ volume: 0.2 })
+            this.startQuackAnimation();
         }
 
         // find a target
