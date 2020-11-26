@@ -69,6 +69,8 @@ export class Duck extends Entity {
     constructor(gameState: GameState, x: number, y: number, duckType: string) {
         super(gameState, `duck-${duckType}`, x, y);
 
+        this.image.scale = 0.8;
+
         this.motion = 'walk';
         this.anim = duckAnims[this.motion];
         this.speed = this.anim.speed;
@@ -204,7 +206,7 @@ export class Duck extends Entity {
             if (this.gameState.fetchFood().length > 0) {
                 const breadList = this.gameState.fetchFood().map(f => ({ distance: this.distanceFromEntity(f) + randomInt(30), target: f }));
                 const select = breadList.sort(f => f.distance).reverse()[0];
-                if (select.distance < 250) {
+                if (select.distance < 450) {
 
                     this.target?.destroy();
                     this.target = select.target;
@@ -237,6 +239,6 @@ export class Duck extends Entity {
 
         this.x += this.vector.x;
         this.y += this.vector.y;
-        this.image.depth = this.y + 128;
+        this.image.depth = this.y + this.image.y;
     }
 }

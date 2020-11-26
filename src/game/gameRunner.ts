@@ -47,8 +47,8 @@ function preload() {
     const scene = this as Phaser.Scene;
 
     scene.load.json('pond-map', 'assets/pond.json');
-    scene.load.spritesheet('duck-white', 'assets/duck-white-spritesheet.png', { frameWidth: 128, frameHeight: 128 });
-    scene.load.spritesheet('duck-mallard', 'assets/duck-mallard-spritesheet.png', { frameWidth: 128, frameHeight: 128 });
+    scene.load.spritesheet('duck-white', 'assets/duck-white-spritesheet.png', { frameWidth: 512, frameHeight: 512 });
+    scene.load.spritesheet('duck-mallard', 'assets/duck-mallard-spritesheet.png', { frameWidth: 512, frameHeight: 512 });
     scene.load.spritesheet('landscape-tileset', 'assets/landscape-spritesheet.png', { frameWidth: 132, frameHeight: 100 });
     scene.load.spritesheet('water', 'assets/landscapeTiles_066.png', { frameWidth: 132, frameHeight: 100 });
 

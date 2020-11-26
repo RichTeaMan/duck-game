@@ -43,7 +43,7 @@ def render_direction(direction_name, camera_x, camera_y):
         cam = bpy.data.cameras.new(f"Camera-{direction_name}")
         cam.lens = 18
         cam.type = 'ORTHO'
-        cam.ortho_scale = 0.9
+        cam.ortho_scale = 1.4
 
         # create the first camera object
         cam_obj = bpy.data.objects.new(camera_object_name, cam)
@@ -148,8 +148,8 @@ def renderDuck(skin_name):
     widths, heights = zip(*(i.size for i in images))
 
     # sheet is padded
-    total_width = 32 * 128
-    total_height = 8 * 128
+    total_width = 32 * 512
+    total_height = 8 * 512
 
     new_im = Image.new('RGBA', (total_width, total_height))
 
