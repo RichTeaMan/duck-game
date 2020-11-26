@@ -35,18 +35,23 @@ def update_camera(camera, focus_point=mathutils.Vector((0.0, 0.0, 0.0)), distanc
 def render_direction(direction_name, camera_x, camera_y):
     global images_created
     filepath = f"{modelDir}/renders/{images_created}.png"
-    cam = bpy.data.cameras.new(f"Camera-{direction_name}")
-    cam.lens = 18
-    cam.type = 'ORTHO'
-    cam.ortho_scale = 0.9
 
-    # create the first camera object
-    cam_obj = bpy.data.objects.new(f"CameraObj-{direction_name}", cam)
-    cam_obj.location = (camera_x, camera_y, 0.5)
-    cam_obj.rotation_euler = (0, 0, 0)
-    scn.collection.objects.link(cam_obj)
+    camera_object_name = f"CameraObj-{direction_name}"
+    cam_obj = bpy.data.objects.get(camera_object_name)
 
-    update_camera(cam_obj)
+    if (not cam_obj):
+        cam = bpy.data.cameras.new(f"Camera-{direction_name}")
+        cam.lens = 18
+        cam.type = 'ORTHO'
+        cam.ortho_scale = 0.9
+
+        # create the first camera object
+        cam_obj = bpy.data.objects.new(camera_object_name, cam)
+        cam_obj.location = (camera_x, camera_y, 0.5)
+        cam_obj.rotation_euler = (0, 0, 0)
+        scn.collection.objects.link(cam_obj)
+
+        update_camera(cam_obj)
 
     scn.camera = cam_obj
     bpy.context.scene.render.filepath = filepath
