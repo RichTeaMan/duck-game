@@ -1,8 +1,11 @@
 import sys
 import math
+import pathlib
 import bpy
 import mathutils
 from PIL import Image
+
+modelDir = pathlib.Path(__file__).parent.absolute()
 
 scn = bpy.context.scene
 images_created = 0
@@ -31,7 +34,7 @@ def update_camera(camera, focus_point=mathutils.Vector((0.0, 0.0, 0.0)), distanc
 
 def render_direction(direction_name, camera_x, camera_y):
     global images_created
-    filepath = f"F:/projects/duck-game/models/renders/{images_created}.png"
+    filepath = f"{modelDir}/renders/{images_created}.png"
     cam = bpy.data.cameras.new(f"Camera-{direction_name}")
     cam.lens = 18
     cam.type = 'ORTHO'
@@ -64,13 +67,19 @@ def render_frames(files):
     files.append(render_direction("SW", -offset, offset))
 
 def renderDuck(skin_name):
-    texture_image = bpy.data.images[f"duck-texture-{skin_name}"]
+    body_texture_image = bpy.data.images[f"duck-texture-{skin_name}"]
+    body_material = bpy.data.materials.get("duck-body")
+    body_bsdf = body_material.node_tree.nodes["Principled BSDF"]
+    body_shader_node_texture_image = body_material.node_tree.nodes.new('ShaderNodeTexImage')
+    body_shader_node_texture_image.image = body_texture_image
+    body_material.node_tree.links.new(body_bsdf.inputs['Base Color'], body_shader_node_texture_image.outputs['Color'])
 
-    mat = bpy.data.materials.get("duck-body")
-    bsdf = mat.node_tree.nodes["Principled BSDF"]
-    shader_node_texture_image = mat.node_tree.nodes.new('ShaderNodeTexImage')
-    shader_node_texture_image.image = texture_image
-    mat.node_tree.links.new(bsdf.inputs['Base Color'], shader_node_texture_image.outputs['Color'])
+    wing_texture_image = bpy.data.images[f"duck-wing-texture-{skin_name}"]
+    wing_material = bpy.data.materials.get("duck-wing")
+    wing_bsdf = wing_material.node_tree.nodes["Principled BSDF"]
+    wing_shader_node_texture_image = wing_material.node_tree.nodes.new('ShaderNodeTexImage')
+    wing_shader_node_texture_image.image = wing_texture_image
+    wing_material.node_tree.links.new(wing_bsdf.inputs['Base Color'], wing_shader_node_texture_image.outputs['Color'])
 
     files = []
 
@@ -96,13 +105,46 @@ def renderDuck(skin_name):
     render_frames(files)
     bpy.data.shape_keys["Key.001"].key_blocks["feed"].value = 0.0
 
+    # mouth
+    render_frames(files) # wasted frame for laziness reasons
+    bpy.data.shape_keys["Key.001"].key_blocks["mouth"].value = 0.5
+    render_frames(files)
+    bpy.data.shape_keys["Key.001"].key_blocks["mouth"].value = 1.0
+    render_frames(files)
+    bpy.data.shape_keys["Key.001"].key_blocks["mouth"].value = 0.0
+
+    # swim flapping
+    render_frames(files) # wasted frame for laziness reasons
+    bpy.data.shape_keys["Key.001"].key_blocks["standing"].value = 0.5
+    bpy.data.shape_keys["Key"].key_blocks["wing-standing"].value = 0.5
+    bpy.data.shape_keys["Key"].key_blocks["standing-flap"].value = 0.5
+    render_frames(files)
+    bpy.data.shape_keys["Key.001"].key_blocks["standing"].value = 1.0
+    bpy.data.shape_keys["Key"].key_blocks["wing-standing"].value = 1.0
+    bpy.data.shape_keys["Key"].key_blocks["standing-flap"].value = 1.0
+    render_frames(files)
+    bpy.data.shape_keys["Key.001"].key_blocks["standing"].value = 1.0
+    bpy.data.shape_keys["Key"].key_blocks["wing-standing"].value = 1.0
+    bpy.data.shape_keys["Key"].key_blocks["standing-flap"].value = 1.0
+    render_frames(files)
+    bpy.data.shape_keys["Key"].key_blocks["standing-flap-up"].value = 1.0
+    render_frames(files)
+    bpy.data.shape_keys["Key"].key_blocks["standing-flap-up"].value = 0.0
+    bpy.data.shape_keys["Key"].key_blocks["standing-flap-down"].value = 1.0
+    render_frames(files)
+
+    bpy.data.shape_keys["Key.001"].key_blocks["standing"].value = 0.0
+    bpy.data.shape_keys["Key"].key_blocks["wing-standing"].value = 0.0
+    bpy.data.shape_keys["Key"].key_blocks["standing-flap"].value = 0.0
+    bpy.data.shape_keys["Key"].key_blocks["standing-flap-up"].value = 0.0
+    bpy.data.shape_keys["Key"].key_blocks["standing-flap-down"].value = 0.0
 
     images = [Image.open(x) for x in files]
     widths, heights = zip(*(i.size for i in images))
 
     # sheet is padded
     total_width = 32 * 128
-    total_height = sum(heights)
+    total_height = 8 * 128
 
     new_im = Image.new('RGBA', (total_width, total_height))
 
@@ -118,7 +160,7 @@ def renderDuck(skin_name):
         else:
             y_offset += im.size[1]
 
-    new_im.save(f"F:/projects/duck-game/public/assets/duck-{skin_name}-spritesheet.png")
+    new_im.save(f"{modelDir}/../public/assets/duck-{skin_name}-spritesheet.png")
 
 renderDuck("white")
 renderDuck("mallard")
