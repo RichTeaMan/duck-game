@@ -45,7 +45,7 @@ export class UiScene extends Phaser.Scene {
         }
 
         if (debugMsg !== '') {
-            this.debugMessage.text= debugMsg;
+            this.debugMessage.text = debugMsg;
         }
 
     }
@@ -129,13 +129,32 @@ export class UiScene extends Phaser.Scene {
     }
 
     displayToast(message: string) {
-        const delay = 5;
-        const toast = this.addTextWithDuration(message, delay);
-        this.time.delayedCall(delay * 1000, () => { this.toastMessages = this.toastMessages.filter(t => t !== toast)}, null, null);
-        toast.x = this.toastX;
-        toast.y = this.toastY + (this.toastMessages.length * this.toastYMargin) + this.toastMessages.map(t => t.height).reduce((a, b) => a + b, 0);
-
+        const delay = 15;
+        const toast = this.addText(message);
+        this.time.delayedCall(delay * 1000, () => {
+            this.toastMessages = this.toastMessages.filter(t => t !== toast);
+            toast.destroy();
+            this.repositionToasts();
+        }, null, null);
         this.toastMessages.push(toast);
+        this.repositionToasts();
+
+    }
+
+    private repositionToasts() {
+        let y = this.toastY;
+        this.toastMessages.forEach(toastMessage => {
+
+            if (y > this.cameras.main.height * 0.75) { // don't display this many toasts
+                toastMessage.setVisible(false);
+            }
+            else {
+                toastMessage.setVisible(true);
+                toastMessage.y = y;
+                toastMessage.x = this.toastX;
+                y += this.toastYMargin + toastMessage.height;
+            }
+        });
     }
 
 
