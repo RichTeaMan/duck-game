@@ -36,7 +36,9 @@ const duckAnims = {
 export class DuckType {
     static duckTypes = [
         "white",
-        "mallard"];
+        "mallard",
+        "duckling"
+    ];
 
     static random() {
         return DuckType.duckTypes[randomInt(DuckType.duckTypes.length)];
@@ -70,10 +72,22 @@ export class Duck extends Entity {
 
     thought: string = '';
 
+    /**
+     * THe duck this duck should follow.
+     */
+    leaderDuck: Duck;
+
+    duckType: DuckType;
+
     constructor(gameState: GameState, x: number, y: number, duckType: string) {
         super(gameState, `duck-${duckType}`, x, y);
+        if (duckType === 'duckling') {
+            this.image.scale = 0.4;
+        }
+        else {
+            this.image.scale = 0.8;
+        }
 
-        this.image.scale = 0.8;
         this.image.setInteractive();
         this.image.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
             this.startQuackAnimation();
@@ -83,6 +97,7 @@ export class Duck extends Entity {
             this.gameState.uiScene.displayDuckInfo(this);
         });
 
+        this.duckType = duckType;
         this.motion = 'walk';
         this.anim = duckAnims[this.motion];
         this.speed = this.anim.speed;
@@ -215,6 +230,17 @@ export class Duck extends Entity {
             this.startQuackAnimation();
         }
 
+        if (this.leaderDuck != null) {
+            const oppDir = this.leaderDuck.direction.opposite;
+
+            const leaderOffset = 90;
+            const justBehindX = this.leaderDuck.x + leaderOffset * oppDir.x;
+            const justBehindY = this.leaderDuck.y + leaderOffset * oppDir.y;
+
+            this.vector = this.vectorToTarget(justBehindX, justBehindY, 1)
+            this.direction = Direction.determineFromVector(this.vector);
+        }
+
         // find a target
         if (this.target == null || this.target.isDestroyed || this.target.entityType() !== EntityType.Food) {
 
@@ -243,7 +269,7 @@ export class Duck extends Entity {
             this.direction = Direction.determineFromVector(this.vector);
         }
 
-        if (this.distanceFromEntity(this.target) < 2.5) {
+        if (this.target != null && this.distanceFromEntity(this.target) < 2.5) {
             this.target.destroy();
 
             if (this.target.entityType() === EntityType.Food) {

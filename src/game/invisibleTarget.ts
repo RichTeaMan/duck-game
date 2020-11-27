@@ -7,7 +7,7 @@ export class InvisibleTarget extends Entity {
     constructor(gameState: GameState, x: number, y: number) {
         super(gameState, 'target', x, y);
 
-        this.image.depth = 2000;
+        this.image.depth = 10000;
         this.image.setVisible(gameState.debug.showTargets);
     }
 

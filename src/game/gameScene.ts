@@ -1,5 +1,6 @@
 import * as Phaser from 'phaser';
 import { Duck, DuckType } from './duck';
+import { EntityType } from './entityType';
 import { Food } from './food';
 import { GameState } from './gameState';
 import { randomInt } from './utils';
@@ -21,6 +22,7 @@ export class GameScene extends Phaser.Scene {
         scene.load.json('pond-map', 'assets/pond.json');
         scene.load.spritesheet('duck-white', 'assets/duck-white-spritesheet.png', { frameWidth: 512, frameHeight: 512 });
         scene.load.spritesheet('duck-mallard', 'assets/duck-mallard-spritesheet.png', { frameWidth: 512, frameHeight: 512 });
+        scene.load.spritesheet('duck-duckling', 'assets/duck-duckling-spritesheet.png', { frameWidth: 512, frameHeight: 512 });
         scene.load.spritesheet('landscape-tileset', 'assets/landscape-spritesheet.png', { frameWidth: 132, frameHeight: 100 });
         scene.load.spritesheet('water', 'assets/landscapeTiles_066.png', { frameWidth: 132, frameHeight: 100 });
 
@@ -28,6 +30,7 @@ export class GameScene extends Phaser.Scene {
         scene.load.image('breadc', 'assets/bread_cursor.png');
 
         scene.load.image('debug', 'assets/debug.png');
+        scene.load.image('target', 'assets/target.png');
 
         scene.load.audio('quackquack-f', 'assets/quackquack-f.mp3');
         scene.load.json('duck-thoughts', 'assets/duck-thoughts.json');
@@ -60,6 +63,9 @@ export class GameScene extends Phaser.Scene {
 
             this.gameState.addEntity(new Duck(this.gameState, randomTile.x, randomTile.y, randomDuckType));
         }
+        const leaderDuck = this.gameState.entities.filter(e => e.entityType() == EntityType.Duck && (e as Duck).duckType !== "duckling")[0] as Duck;
+        const duckling = this.gameState.entities.filter(e => e.entityType() == EntityType.Duck && (e as Duck).duckType === "duckling") as Array<Duck>;
+        duckling.forEach(d => d.leaderDuck = leaderDuck);
 
         this.gameState.scene.cameras.main.scrollX = x_offset;
         this.gameState.scene.cameras.main.scrollY = y_offset;
