@@ -17,6 +17,9 @@ export class GameScene extends Phaser.Scene {
     }
 
     preload() {
+        this.gameState = GameState.singleton();
+        this.gameState.scene = this;
+
         const scene = this as Phaser.Scene;
 
         scene.load.json('pond-map', 'assets/pond.json');
@@ -37,9 +40,6 @@ export class GameScene extends Phaser.Scene {
     }
 
     create() {
-        this.gameState = GameState.singleton();
-        this.gameState.scene = this;
-    
         window.addEventListener("resize", () => {
             GameState.singleton().scene.game.scale.resize(window.innerWidth / ZOOM_LEVEL, window.innerHeight / ZOOM_LEVEL);
         }, false);
@@ -63,8 +63,8 @@ export class GameScene extends Phaser.Scene {
 
             this.gameState.addEntity(new Duck(this.gameState, randomTile.x, randomTile.y, randomDuckType));
         }
-        const leaderDuck = this.gameState.entities.filter(e => e.entityType() == EntityType.Duck && (e as Duck).duckType !== "duckling")[0] as Duck;
-        const duckling = this.gameState.entities.filter(e => e.entityType() == EntityType.Duck && (e as Duck).duckType === "duckling") as Array<Duck>;
+        const leaderDuck = this.gameState.entities.filter(e => e.entityType() === EntityType.Duck && (e as Duck).duckType !== "duckling")[0] as Duck;
+        const duckling = this.gameState.entities.filter(e => e.entityType() === EntityType.Duck && (e as Duck).duckType === "duckling") as Array<Duck>;
         duckling.forEach(d => d.leaderDuck = leaderDuck);
 
         this.gameState.scene.cameras.main.scrollX = x_offset;

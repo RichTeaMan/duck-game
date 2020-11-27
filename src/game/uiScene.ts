@@ -11,25 +11,38 @@ export class UiScene extends Phaser.Scene {
 
     duckInfoObjects: Array<{ destroy(): void }> = [];
 
+    debugMessage: Phaser.GameObjects.Text;
+
 
     constructor() {
         super({ key: 'UiScene', active: true });
-
-
     }
 
     preload() {
+        this.gameState = GameState.singleton();
+        this.gameState.uiScene = this;
 
+        this.debugMessage = this.addText('');
     }
 
     create() {
-        this.gameState = GameState.singleton();
-        this.gameState.uiScene = this;
 
         this.startBeginningMessage();
     }
 
     update() {
+
+        let debugMsg = '';
+        if (this.gameState.debug.showMouseData) {
+            const pointer = this.gameState.fetchPointer();
+            const worldPointer = this.gameState.fetchWorldPointerPosition();
+            debugMsg += `Mouse: (${pointer.x.toFixed(2)}, ${pointer.y.toFixed(2)}) World: (${worldPointer.x.toFixed(2)}, ${worldPointer.y.toFixed(2)})`;
+        }
+
+        if (debugMsg !== '') {
+            this.debugMessage.text= debugMsg;
+        }
+
     }
 
     startBeginningMessage() {

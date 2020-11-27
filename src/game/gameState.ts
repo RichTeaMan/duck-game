@@ -21,7 +21,18 @@ export class GameState {
     waterTiles: Array<Phaser.GameObjects.Image> = [];
 
     debug = {
-        showTargets: false
+        showTargets: false,
+        showMouseData: true
+    }
+
+    fetchPointer() {
+        return this.scene.input.activePointer;
+    }
+
+    fetchWorldPointerPosition() {
+        const pointer = this.fetchPointer();
+        const point = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
+        return point;
     }
 
     update() {
