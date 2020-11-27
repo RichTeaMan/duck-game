@@ -7,7 +7,7 @@ export class Food extends Entity {
     static createBread(gameState: GameState, x: number, y: number): Food {
 
         const bread = new Food(gameState, 'bread', x, y);
-        bread.image.scale = 0.2;
+        bread.image.scale = 0.6;
         gameState.entities.push(bread);
         return bread;
     }
