@@ -97,14 +97,17 @@ export class UiScene extends Phaser.Scene {
         });
 
         const name = this.addText(duck.name, 4);
-        const title = this.add.text(0, 0, "the duck", { fontFamily: FONT_FAMILY, fontSize: '2em', fontStyle: 'italic' });
+        const title = this.add.text(0, 0, "(the duck)", { fontFamily: FONT_FAMILY, fontSize: '2em', fontStyle: 'italic' });
+        const thought = this.add.text(0, 0, `is thinking about ${duck.thought}`, { fontFamily: FONT_FAMILY, fontSize: '2em', fontStyle: 'italic' });
         name.x = 40;
         name.y = this.cameras.main.height * 0.75;
 
         title.y = name.y + name.height - (title.height * 1.25);
         title.x = name.x + name.width + 20;
+        thought.x = 80;
+        thought.y = name.y + 40;
 
-        this.duckInfoObjects = [name, title];
+        this.duckInfoObjects = [name, title, thought];
     }
 
 

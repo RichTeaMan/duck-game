@@ -68,16 +68,20 @@ export class Duck extends Entity {
 
     idleTicks = 0;
 
+    thought: string = '';
+
     constructor(gameState: GameState, x: number, y: number, duckType: string) {
         super(gameState, `duck-${duckType}`, x, y);
 
         this.image.scale = 0.8;
         this.image.setInteractive();
         this.image.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+            this.startQuackAnimation();
+            this.gameState.scene.sound.add('quackquack-f').play({ volume: 0.2 });
+            const thoughts = this.gameState.scene.cache.json.get('duck-thoughts') as Array<string>;
+            this.thought = randomElement(thoughts);
             this.gameState.uiScene.displayDuckInfo(this);
         });
-
-
 
         this.motion = 'walk';
         this.anim = duckAnims[this.motion];

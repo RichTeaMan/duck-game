@@ -30,6 +30,7 @@ export class GameScene extends Phaser.Scene {
         scene.load.image('debug', 'assets/debug.png');
 
         scene.load.audio('quackquack-f', 'assets/quackquack-f.mp3');
+        scene.load.json('duck-thoughts', 'assets/duck-thoughts.json');
     }
 
     create() {
