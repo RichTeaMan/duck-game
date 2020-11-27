@@ -238,7 +238,7 @@ export class Duck extends Entity {
         this.nesting = true;
         this.target?.destroy();
         this.target = nest;
-        this.vector = this.vectorToEntity(nest, 2);
+        this.vector = this.vectorToEntity(nest, 3);
     }
 
     nestingComplete() {
@@ -283,7 +283,7 @@ export class Duck extends Entity {
         }
 
         // find a target
-        if (this.target == null || this.target.isDestroyed || this.target.entityType() !== EntityType.Food) {
+        if (this.target == null || this.target.isDestroyed || this.target.entityType() === EntityType.Invisible) {
 
             // look for food
             if (this.gameState.fetchFood().length > 0) {

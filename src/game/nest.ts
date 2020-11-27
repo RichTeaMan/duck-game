@@ -55,6 +55,12 @@ export class Nest extends Entity {
         return EntityType.Nest;
     }
 
+    destroy() {
+        console.log ("nest destroyed!!!");
+        console.trace();
+        super.destroy();
+    }
+
     update() {
 
         if (this.nestingDuck == null) {
