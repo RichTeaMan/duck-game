@@ -54,9 +54,6 @@ export class GameScene extends Phaser.Scene {
                 const gameState = this.gameState as GameState;
                 const point = this.gameState.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
                 Food.createBread(this.gameState, point.x, point.y + 40);
-
-                const data = this.gameState.scene.cache.json.get('duck-thoughts');
-                gameState.uiScene.displayToast(randomElement(data));
             }
         }, this);
 
