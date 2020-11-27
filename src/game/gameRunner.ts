@@ -1,11 +1,6 @@
 import * as Phaser from 'phaser';
 import { GameScene } from './gameScene';
-import { GameState } from './gameState';
 import { UiScene } from './uiScene';
-
-let gameState: GameState;
-
-const ZOOM_LEVEL = 0.4;
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
     title: 'duck-game',

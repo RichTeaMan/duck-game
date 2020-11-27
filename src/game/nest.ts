@@ -28,11 +28,12 @@ export class Nest extends Entity {
     constructor(gameState: GameState, imageName: string, x: number, y: number) {
         super(gameState, imageName, x, y);
 
-        this.image.setInteractive();
+        this.image.setInteractive({ cursor: 'pointer'});
         this.image.depth = y + 200;
     }
 
     onPointerDown(pointer: Phaser.Input.Pointer) {
+        this.gameState.pointerHandled = true;
 
         if (this.nestingDuck != null) {
             this.gameState.uiScene.displayToast("A duck is already nesting there.");

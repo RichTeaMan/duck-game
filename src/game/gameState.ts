@@ -26,6 +26,8 @@ export class GameState {
         showMouseData: true
     }
 
+    pointerHandled = false;
+
     fetchPointer() {
         return this.scene.input.activePointer;
     }
@@ -39,7 +41,9 @@ export class GameState {
     update() {
         this.entities.forEach(entity => {
             entity.update();
-        })
+        });
+
+        this.pointerHandled = false;
     }
 
     pruneEntities() {

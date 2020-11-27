@@ -1,5 +1,3 @@
-import { getJSDocThisTag } from "typescript";
-import { threadId } from "worker_threads";
 import { Direction } from "./direction";
 import { Entity } from "./entity";
 import { EntityType } from "./entityType";
@@ -104,7 +102,8 @@ export class Duck extends Entity {
 
         this.duckling = duckling;
 
-        this.image.setInteractive();
+        this.image.setInteractive({ cursor: 'pointer'});
+        this.image.input.hitArea.setTo(128, 128, 512 - 128, 512 -128);
 
         this.duckType = duckType;
         this.motion = 'walk';
@@ -116,6 +115,8 @@ export class Duck extends Entity {
     };
 
     onPointerDown(pointer: Phaser.Input.Pointer) {
+        this.gameState.pointerHandled = true;
+        pointer.event.stopImmediatePropagation();
         this.startQuackAnimation();
         this.gameState.scene.sound.add('quackquack-f').play({ volume: 0.2 });
         const thoughts = this.gameState.scene.cache.json.get('duck-thoughts') as Array<string>;
@@ -257,6 +258,8 @@ export class Duck extends Entity {
 
             this.image = this.gameState.scene.add.image(this.x, this.y, `duck-${this.duckType}`);
             this.image.scale = 0.8;
+
+            this.gameState.uiScene.displayToast(`${this.name} is all grown up.`);
         }
 
         if (!this.active)

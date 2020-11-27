@@ -1,16 +1,15 @@
 import * as Phaser from 'phaser';
 import { Duck, DuckType } from './duck';
-import { EntityType } from './entityType';
 import { Food } from './food';
 import { GameState } from './gameState';
 import { Nest } from './nest';
-import { randomInt } from './utils';
+import { randomElement, randomInt } from './utils';
 
 
 const ZOOM_LEVEL = 0.4;
 
 export class GameScene extends Phaser.Scene {
-    
+
     gameState: GameState;
 
     constructor() {
@@ -46,11 +45,19 @@ export class GameScene extends Phaser.Scene {
             //GameState.singleton().scene.game.scale.resize(window.innerWidth / ZOOM_LEVEL, window.innerHeight / ZOOM_LEVEL);
         }, false);
 
-        this.input.setDefaultCursor('url(assets/bread_cursor.png), pointer');
+        this.input.setDefaultCursor('url(assets/bread_cursor.png), crosshair');
         this.input.on('pointerdown', function (pointer: Phaser.Input.Pointer) {
+            if (this.gameState.pointerHandled)
+                return;
 
-            const point = this.gameState.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
-            Food.createBread(this.gameState, point.x, point.y + 40);
+            if (pointer.leftButtonDown()) {
+                const gameState = this.gameState as GameState;
+                const point = this.gameState.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
+                Food.createBread(this.gameState, point.x, point.y + 40);
+
+                const data = this.gameState.scene.cache.json.get('duck-thoughts');
+                gameState.uiScene.displayToast(randomElement(data));
+            }
         }, this);
 
         this.buildMap();
