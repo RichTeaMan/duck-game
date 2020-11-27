@@ -45,6 +45,8 @@ export class DuckType {
 
 export class Duck extends Entity {
 
+    name = randomElement(["Daisy", "Mavis", "Harold", "Ernest", "Ermintrude", "Annie", "Reginald", "Clarence", "Emmett", "Gert", "Hilda", "Doris", "Hattie"]);
+
     motion: any;
     anim: any;
     direction: Direction = Direction.random();
@@ -70,6 +72,12 @@ export class Duck extends Entity {
         super(gameState, `duck-${duckType}`, x, y);
 
         this.image.scale = 0.8;
+        this.image.setInteractive();
+        this.image.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+            this.gameState.uiScene.displayDuckInfo(this);
+        });
+
+
 
         this.motion = 'walk';
         this.anim = duckAnims[this.motion];
@@ -82,6 +90,10 @@ export class Duck extends Entity {
 
     entityType(): EntityType {
         return EntityType.Duck;
+    }
+
+    onObjectClicked(pointer: Phaser.Input.Pointer) {
+        this.gameState.uiScene.addTextWithDuration(this.name, 6000);
     }
 
     startWalkAnimation() {

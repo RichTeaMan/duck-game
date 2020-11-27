@@ -1,6 +1,8 @@
 import { Entity } from "./entity";
 import { EntityType } from "./entityType";
 import { Food } from "./food";
+import { GameScene } from "./gameScene";
+import { UiScene } from "./uiScene";
 
 export class GameState {
 
@@ -12,8 +14,8 @@ export class GameState {
         return this._instance;
     }
 
-    scene: Phaser.Scene;
-    uiScene: Phaser.Scene;
+    scene: GameScene;
+    uiScene: UiScene;
     cursors: Phaser.Types.Input.Keyboard.CursorKeys;
     entities: Array<Entity> = [];
     waterTiles: Array<Phaser.GameObjects.Image> = [];
