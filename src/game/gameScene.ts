@@ -65,9 +65,6 @@ export class GameScene extends Phaser.Scene {
 
             this.gameState.addEntity(new Duck(this.gameState, randomTile.x, randomTile.y, randomDuckType));
         }
-        const leaderDuck = this.gameState.entities.filter(e => e.entityType() === EntityType.Duck && (e as Duck).duckType !== "duckling")[0] as Duck;
-        const duckling = this.gameState.entities.filter(e => e.entityType() === EntityType.Duck && (e as Duck).duckType === "duckling") as Array<Duck>;
-        duckling.forEach(d => d.leaderDuck = leaderDuck);
 
         Nest.create(this.gameState, 7013, 2144);
 

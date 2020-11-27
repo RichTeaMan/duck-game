@@ -1,4 +1,4 @@
-import { Duck } from "./duck";
+import { Duck, DuckType } from "./duck";
 import { Entity } from "./entity";
 import { EntityType } from "./entityType";
 import { GameState } from "./gameState";
@@ -82,7 +82,7 @@ export class Nest extends Entity {
             const names = [];
             let leader = this.nestingDuck;
             for (let i = 0; i < ducklingCount; i++) {
-                const duckling = new Duck(this.gameState, this.nestingDuck.x, this.nestingDuck.y, 'duckling');
+                const duckling = new Duck(this.gameState, this.nestingDuck.x, this.nestingDuck.y, DuckType.random(), true);
                 duckling.leaderDuck = leader;
                 this.gameState.addEntity(duckling);
                 leader = duckling;

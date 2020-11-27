@@ -1,4 +1,5 @@
 import { getJSDocThisTag } from "typescript";
+import { threadId } from "worker_threads";
 import { Direction } from "./direction";
 import { Entity } from "./entity";
 import { EntityType } from "./entityType";
@@ -38,8 +39,7 @@ const duckAnims = {
 export class DuckType {
     static duckTypes = [
         "white",
-        "mallard",
-        "duckling"
+        "mallard"
     ];
 
     static random() {
@@ -48,6 +48,11 @@ export class DuckType {
 }
 
 export class Duck extends Entity {
+
+    /**
+     * Gets the age in ticks when a duckling should age into a duck.
+     */
+    static DUCKLING_MATURATION_AGE = 3000;
 
     name = randomElement(["Daisy", "Mavis", "Harold", "Ernest", "Ermintrude", "Annie", "Reginald", "Clarence", "Emmett", "Gert", "Hilda", "Doris", "Hattie"]);
 
@@ -79,16 +84,25 @@ export class Duck extends Entity {
 
     duckType: DuckType;
 
+    duckling: boolean;
+
+    /**
+     * Age of the duck in ticks.
+     */
+    age = 0;
+
     private nesting = false;
 
-    constructor(gameState: GameState, x: number, y: number, duckType: string) {
-        super(gameState, `duck-${duckType}`, x, y);
-        if (duckType === 'duckling') {
+    constructor(gameState: GameState, x: number, y: number, duckType: string, duckling = false) {
+        super(gameState, duckling ? `duck-duckling` : `duck-${duckType}`, x, y);
+        if (duckling) {
             this.image.scale = 0.4;
         }
         else {
             this.image.scale = 0.8;
         }
+
+        this.duckling = duckling;
 
         this.image.setInteractive();
 
@@ -233,6 +247,18 @@ export class Duck extends Entity {
     }
 
     update() {
+        this.age++;
+        if (this.duckling && this.age > Duck.DUCKLING_MATURATION_AGE) {
+
+            this.duckling = false;
+            this.leaderDuck = null;
+            this.target = null;
+            this.image.destroy();
+
+            this.image = this.gameState.scene.add.image(this.x, this.y, `duck-${this.duckType}`);
+            this.image.scale = 0.8;
+        }
+
         if (!this.active)
             return;
 
@@ -282,7 +308,7 @@ export class Duck extends Entity {
         }
 
         if (!this.nesting && this.target != null && this.distanceFromEntity(this.target) < 2.5) {
-            //this.target.destroy();
+            this.target.destroy();
 
             if (this.target.entityType() === EntityType.Food) {
                 this.startFeedAnimation();
