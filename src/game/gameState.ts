@@ -1,3 +1,4 @@
+import { Duck } from "./duck";
 import { Entity } from "./entity";
 import { EntityType } from "./entityType";
 import { Food } from "./food";
@@ -54,6 +55,10 @@ export class GameState {
 
     fetchFood(): Food[] {
         return this.entities.filter(e => e.entityType() === EntityType.Food && !e.isDestroyed) as Food[];
+    }
+
+    fetchDucks(): Duck[] {
+        return this.entities.filter(e => e.entityType() === EntityType.Duck && !e.isDestroyed) as Duck[];
     }
 
     addEntity(entity: Entity) {

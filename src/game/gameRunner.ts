@@ -32,7 +32,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
 };
 
 window.addEventListener("resize", () => {
-    gameState.scene.game.scale.resize(window.innerWidth / ZOOM_LEVEL, window.innerHeight / ZOOM_LEVEL);
+    //gameState.scene.game.scale.resize(window.innerWidth / ZOOM_LEVEL, window.innerHeight / ZOOM_LEVEL);
 }, false);
 
 

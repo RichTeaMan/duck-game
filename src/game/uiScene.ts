@@ -13,6 +13,11 @@ export class UiScene extends Phaser.Scene {
 
     debugMessage: Phaser.GameObjects.Text;
 
+    toastMessages: Array<Phaser.GameObjects.Text> = [];
+    toastX = 50;
+    toastY = 400;
+    toastYMargin = 15;
+
 
     constructor() {
         super({ key: 'UiScene', active: true });
@@ -121,6 +126,16 @@ export class UiScene extends Phaser.Scene {
         thought.y = name.y + 40;
 
         this.duckInfoObjects = [name, title, thought];
+    }
+
+    displayToast(message: string) {
+        const delay = 5;
+        const toast = this.addTextWithDuration(message, delay);
+        this.time.delayedCall(delay * 1000, () => { this.toastMessages = this.toastMessages.filter(t => t !== toast)}, null, null);
+        toast.x = this.toastX;
+        toast.y = this.toastY + (this.toastMessages.length * this.toastYMargin) + this.toastMessages.map(t => t.height).reduce((a, b) => a + b, 0);
+
+        this.toastMessages.push(toast);
     }
 
 

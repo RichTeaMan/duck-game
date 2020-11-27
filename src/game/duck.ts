@@ -1,8 +1,10 @@
+import { getJSDocThisTag } from "typescript";
 import { Direction } from "./direction";
 import { Entity } from "./entity";
 import { EntityType } from "./entityType";
 import { GameState } from "./gameState";
 import { InvisibleTarget } from "./invisibleTarget";
+import { Nest } from "./nest";
 import { randomElement, randomInt } from "./utils";
 
 const duckAnims = {
@@ -62,8 +64,6 @@ export class Duck extends Entity {
     target: Entity = null;
     vector: Phaser.Math.Vector2 = null;
 
-    gameState: GameState;
-
     animationStep = 1;
 
     active = true;
@@ -73,11 +73,13 @@ export class Duck extends Entity {
     thought: string = '';
 
     /**
-     * THe duck this duck should follow.
+     * The duck this duck should follow.
      */
     leaderDuck: Duck;
 
     duckType: DuckType;
+
+    private nesting = false;
 
     constructor(gameState: GameState, x: number, y: number, duckType: string) {
         super(gameState, `duck-${duckType}`, x, y);
@@ -89,30 +91,26 @@ export class Duck extends Entity {
         }
 
         this.image.setInteractive();
-        this.image.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
-            this.startQuackAnimation();
-            this.gameState.scene.sound.add('quackquack-f').play({ volume: 0.2 });
-            const thoughts = this.gameState.scene.cache.json.get('duck-thoughts') as Array<string>;
-            this.thought = randomElement(thoughts);
-            this.gameState.uiScene.displayDuckInfo(this);
-        });
 
         this.duckType = duckType;
         this.motion = 'walk';
         this.anim = duckAnims[this.motion];
         this.speed = this.anim.speed;
         this.f = this.anim.startFrame;
-        this.gameState = gameState;
 
         this.gameState.scene.time.delayedCall(this.anim.speed * 1000, this.changeFrame, [], this);
     };
 
-    entityType(): EntityType {
-        return EntityType.Duck;
+    onPointerDown(pointer: Phaser.Input.Pointer) {
+        this.startQuackAnimation();
+        this.gameState.scene.sound.add('quackquack-f').play({ volume: 0.2 });
+        const thoughts = this.gameState.scene.cache.json.get('duck-thoughts') as Array<string>;
+        this.thought = randomElement(thoughts);
+        this.gameState.uiScene.displayDuckInfo(this);
     }
 
-    onObjectClicked(pointer: Phaser.Input.Pointer) {
-        this.gameState.uiScene.addTextWithDuration(this.name, 6000);
+    entityType(): EntityType {
+        return EntityType.Duck;
     }
 
     startWalkAnimation() {
@@ -220,6 +218,20 @@ export class Duck extends Entity {
         return false;
     }
 
+    sendToNest(nest: Nest) {
+
+        this.nesting = true;
+        this.target?.destroy();
+        this.target = nest;
+        this.vector = this.vectorToEntity(nest, 2);
+    }
+
+    nestingComplete() {
+        this.nesting = false;
+        this.target = null;
+        this.active = true;
+    }
+
     update() {
         if (!this.active)
             return;
@@ -269,14 +281,20 @@ export class Duck extends Entity {
             this.direction = Direction.determineFromVector(this.vector);
         }
 
-        if (this.target != null && this.distanceFromEntity(this.target) < 2.5) {
-            this.target.destroy();
+        if (!this.nesting && this.target != null && this.distanceFromEntity(this.target) < 2.5) {
+            //this.target.destroy();
 
             if (this.target.entityType() === EntityType.Food) {
                 this.startFeedAnimation();
             }
             this.target = null;
             return;
+        }
+        if (this.nesting && this.distanceFromEntity(this.target) < 2.5) {
+            this.vector.x = 0;
+            this.vector.y = 0;
+            this.direction = Direction.west;
+            this.active = false;
         }
 
         this.x += this.vector.x;

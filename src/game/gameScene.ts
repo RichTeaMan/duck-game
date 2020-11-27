@@ -3,6 +3,7 @@ import { Duck, DuckType } from './duck';
 import { EntityType } from './entityType';
 import { Food } from './food';
 import { GameState } from './gameState';
+import { Nest } from './nest';
 import { randomInt } from './utils';
 
 
@@ -28,6 +29,7 @@ export class GameScene extends Phaser.Scene {
         scene.load.spritesheet('duck-duckling', 'assets/duck-duckling-spritesheet.png', { frameWidth: 512, frameHeight: 512 });
         scene.load.spritesheet('landscape-tileset', 'assets/landscape-spritesheet.png', { frameWidth: 132, frameHeight: 100 });
         scene.load.spritesheet('water', 'assets/landscapeTiles_066.png', { frameWidth: 132, frameHeight: 100 });
+        scene.load.image('nest', 'assets/pan_SE.png');
 
         scene.load.image('bread', 'assets/bread_NW.png');
         scene.load.image('breadc', 'assets/bread_cursor.png');
@@ -41,7 +43,7 @@ export class GameScene extends Phaser.Scene {
 
     create() {
         window.addEventListener("resize", () => {
-            GameState.singleton().scene.game.scale.resize(window.innerWidth / ZOOM_LEVEL, window.innerHeight / ZOOM_LEVEL);
+            //GameState.singleton().scene.game.scale.resize(window.innerWidth / ZOOM_LEVEL, window.innerHeight / ZOOM_LEVEL);
         }, false);
 
         this.input.setDefaultCursor('url(assets/bread_cursor.png), pointer');
@@ -66,6 +68,8 @@ export class GameScene extends Phaser.Scene {
         const leaderDuck = this.gameState.entities.filter(e => e.entityType() === EntityType.Duck && (e as Duck).duckType !== "duckling")[0] as Duck;
         const duckling = this.gameState.entities.filter(e => e.entityType() === EntityType.Duck && (e as Duck).duckType === "duckling") as Array<Duck>;
         duckling.forEach(d => d.leaderDuck = leaderDuck);
+
+        Nest.create(this.gameState, 7013, 2144);
 
         this.gameState.scene.cameras.main.scrollX = x_offset;
         this.gameState.scene.cameras.main.scrollY = y_offset;

@@ -5,12 +5,22 @@ export abstract class Entity {
 
     image: Phaser.GameObjects.Image;
     isDestroyed = false;
+    gameState: GameState;
 
     constructor(gameState: GameState, imageName: string, x: number, y: number) {
         this.image = gameState.scene.add.image(x, y, imageName);
+        this.gameState = gameState;
+
+        this.image.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+            this.onPointerDown(pointer)
+        });
     }
 
     abstract entityType(): EntityType;
+
+    onPointerDown(pointer: Phaser.Input.Pointer) {
+
+    }
 
     update() {
 
