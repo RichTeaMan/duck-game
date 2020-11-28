@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/duck-game/static/css/main.73c2ef8f.chunk.css",
-    "main.js": "/duck-game/static/js/main.c1a47665.chunk.js",
-    "main.js.map": "/duck-game/static/js/main.c1a47665.chunk.js.map",
+    "main.js": "/duck-game/static/js/main.27781d6f.chunk.js",
+    "main.js.map": "/duck-game/static/js/main.27781d6f.chunk.js.map",
     "runtime-main.js": "/duck-game/static/js/runtime-main.ba5933f5.js",
     "runtime-main.js.map": "/duck-game/static/js/runtime-main.ba5933f5.js.map",
     "static/js/2.2df7ebc3.chunk.js": "/duck-game/static/js/2.2df7ebc3.chunk.js",
     "static/js/2.2df7ebc3.chunk.js.map": "/duck-game/static/js/2.2df7ebc3.chunk.js.map",
     "index.html": "/duck-game/index.html",
-    "precache-manifest.7d4b3400aa8d5d36e6e7d20b8d475283.js": "/duck-game/precache-manifest.7d4b3400aa8d5d36e6e7d20b8d475283.js",
+    "precache-manifest.d119553da2b55252e290a7f7efa9147b.js": "/duck-game/precache-manifest.d119553da2b55252e290a7f7efa9147b.js",
     "service-worker.js": "/duck-game/service-worker.js",
     "static/css/main.73c2ef8f.chunk.css.map": "/duck-game/static/css/main.73c2ef8f.chunk.css.map"
   },
@@ -16,6 +16,6 @@
     "static/js/runtime-main.ba5933f5.js",
     "static/js/2.2df7ebc3.chunk.js",
     "static/css/main.73c2ef8f.chunk.css",
-    "static/js/main.c1a47665.chunk.js"
+    "static/js/main.27781d6f.chunk.js"
   ]
 }

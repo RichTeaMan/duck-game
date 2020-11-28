@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "0b3802e67ed0275da2ba572bb4facc59",
+    "revision": "eb79a0a9de574010de062ebc636a7718",
     "url": "/duck-game/index.html"
   },
   {
-    "revision": "7e355dcf074ee2da04df",
+    "revision": "565a25cfc4c8fe0ee0a3",
     "url": "/duck-game/static/css/main.73c2ef8f.chunk.css"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/duck-game/static/js/2.2df7ebc3.chunk.js"
   },
   {
-    "revision": "7e355dcf074ee2da04df",
-    "url": "/duck-game/static/js/main.c1a47665.chunk.js"
+    "revision": "565a25cfc4c8fe0ee0a3",
+    "url": "/duck-game/static/js/main.27781d6f.chunk.js"
   },
   {
     "revision": "f7e899df86dc040164ea",
