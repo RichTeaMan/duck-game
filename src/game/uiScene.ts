@@ -55,6 +55,8 @@ export class UiScene extends Phaser.Scene {
                 ui.y = ratioY * this.cameras.main.height;
             }
         });
+        this.previousWidth = this.cameras.main.width;
+        this.previousHeight = this.cameras.main.height;
     }
 
     update() {
