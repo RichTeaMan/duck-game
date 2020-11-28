@@ -1,9 +1,10 @@
 import * as Phaser from 'phaser';
 import { Duck, DuckType } from './duck';
 import { Food } from './food';
+import { TARGET_WIDTH } from './gameRunner';
 import { GameState } from './gameState';
 import { Nest } from './nest';
-import { randomElement, randomInt } from './utils';
+import { randomInt } from './utils';
 
 
 const ZOOM_LEVEL = 0.4;
@@ -41,9 +42,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     create() {
-        window.addEventListener("resize", () => {
-            //GameState.singleton().scene.game.scale.resize(window.innerWidth / ZOOM_LEVEL, window.innerHeight / ZOOM_LEVEL);
-        }, false);
+        this.gameState.cursors = this.input.keyboard.createCursorKeys();
 
         this.input.setDefaultCursor('url(assets/bread_cursor.png), crosshair');
         this.input.on('pointerdown', function (pointer: Phaser.Input.Pointer) {
@@ -51,7 +50,6 @@ export class GameScene extends Phaser.Scene {
                 return;
 
             if (pointer.leftButtonDown()) {
-                const gameState = this.gameState as GameState;
                 const point = this.gameState.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
                 Food.createBread(this.gameState, point.x, point.y + 40);
             }
@@ -76,11 +74,46 @@ export class GameScene extends Phaser.Scene {
         this.gameState.scene.cameras.main.scrollY = y_offset;
         this.gameState.scene.cameras.main.zoom = ZOOM_LEVEL;
 
+        this.scale.on('resize', this.resize, this);
+        this.resize({width: this.gameState.scene.cameras.main.width, height: this.gameState.scene.cameras.main.width}, null, null, null);
+    }
+
+
+    resize(gameSize, baseSize, displaySize, resolution) {
+        // resets camera zoom and adjusts offset.
+
+        var width = gameSize.width;
+        var height = gameSize.height;
+
+        const target = TARGET_WIDTH / ZOOM_LEVEL;
+        const x2 = target / gameSize.width;
+        this.gameState.scene.cameras.main.zoom = 1 / x2;
+
+        this.gameState.scene.cameras.main.scrollX = width * -0.89 + 5898;
+        this.gameState.scene.cameras.main.scrollY = height * -0.52 + 2600;
+
+        this.gameState.uiScene.resize();
     }
 
     update() {
         this.gameState.update();
         this.gameState.pruneEntities();
+
+        if (this.gameState.debug.cameraPanning) {
+            const cursor = this.input.keyboard.createCursorKeys();
+            if (cursor.left.isDown) {
+                this.gameState.scene.cameras.main.scrollX -= 10;
+            }
+            if (cursor.right.isDown) {
+                this.gameState.scene.cameras.main.scrollX += 10;
+            }
+            if (cursor.up.isDown) {
+                this.gameState.scene.cameras.main.scrollY -= 10;
+            }
+            if (cursor.down.isDown) {
+                this.gameState.scene.cameras.main.scrollY += 10;
+            }
+        }
     }
 
     buildMap() {

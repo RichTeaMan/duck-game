@@ -7,10 +7,14 @@ Game.setupGame();
 const App: React.FC = () => {
   return (
     <div className="App">
-      <header className="App-header">
-        <div id="game-container"/>
-      </header>
-        Learn <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">React</a> and <a className="App-link" href="https://phaser.io/" target="_blank" rel="noopener noreferrer">Phaser</a>
+      <div className="centred-content">
+        <div id="game-section">
+          <div id="game-container" />
+        </div>
+      </div>
+      <div id="footer">
+        <a className="App-link" href="https://github.com/RichTeaMan/duck-game" target="_blank" rel="noopener noreferrer">Source Code</a>
+      </div>
     </div>
   );
 }

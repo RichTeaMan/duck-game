@@ -1,5 +1,15 @@
 .App {
+  background-color: #282c34;
   text-align: center;
+  height: 100%;
+  width: 100%;
+}
+
+.centred-content {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .App-logo {
@@ -19,4 +29,18 @@
 
 .App-link {
   color: #09d3ac;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+}
+
+#game-section {
+  height: 45vw;
+  width: 60vw;
+}
+
+#footer {
+  height: 100px;
 }

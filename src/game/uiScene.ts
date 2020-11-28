@@ -18,6 +18,9 @@ export class UiScene extends Phaser.Scene {
     toastY = 400;
     toastYMargin = 15;
 
+    previousHeight = 0;
+    previousWidth = 0;
+
 
     constructor() {
         super({ key: 'UiScene', active: true });
@@ -31,8 +34,27 @@ export class UiScene extends Phaser.Scene {
     }
 
     create() {
-
+        this.previousHeight = this.cameras.main.height;
+        this.previousWidth = this.cameras.main.width;
         this.startBeginningMessage();
+    }
+
+    resize() {
+        // extremely crude way to make sure all UI elements are in the same relative position on the screen after it has been resized.
+        // It will not preserve alignment. If a text element was originally centred it is unlikely to be exactly centred after resize.
+        const children = this.children.getAll();
+        children.forEach(child => {
+            const ui = child as any;
+
+            if (typeof ui.x == 'number' && typeof ui.y == 'number') {
+
+                const ratioX = ui.x / this.previousWidth;
+                const ratioY = ui.y / this.previousHeight;
+
+                ui.x = ratioX * this.cameras.main.width;
+                ui.y = ratioY * this.cameras.main.height;
+            }
+        });
     }
 
     update() {
@@ -41,7 +63,15 @@ export class UiScene extends Phaser.Scene {
         if (this.gameState.debug.showMouseData) {
             const pointer = this.gameState.fetchPointer();
             const worldPointer = this.gameState.fetchWorldPointerPosition();
-            debugMsg += `Mouse: (${pointer.x.toFixed(2)}, ${pointer.y.toFixed(2)}) World: (${worldPointer.x.toFixed(2)}, ${worldPointer.y.toFixed(2)})`;
+            debugMsg += `Mouse: (${pointer.x.toFixed(2)}, ${pointer.y.toFixed(2)}) World: (${worldPointer.x.toFixed(2)}, ${worldPointer.y.toFixed(2)})    `;
+        }
+        if (this.gameState.debug.showResolutionData) {
+            const camera = this.gameState.scene.cameras.main;
+            debugMsg += `Camera (w,h): (${camera.width.toFixed(2)}, ${camera.height.toFixed(2)}) Camera Offset (x,y): (${camera.scrollX.toFixed(2)}, ${camera.scrollY.toFixed(2)})    `;
+        }
+        if (this.gameState.debug.showUiResolutionData) {
+            const camera = this.gameState.uiScene.cameras.main;
+            debugMsg += `UI Camera (w,h): (${camera.width.toFixed(2)}, ${camera.height.toFixed(2)}) UI Camera Offset (x,y): (${camera.scrollX.toFixed(2)}, ${camera.scrollY.toFixed(2)})    `;
         }
 
         if (debugMsg !== '') {
