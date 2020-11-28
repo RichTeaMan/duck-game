@@ -30,6 +30,7 @@ export class Nest extends Entity {
 
         this.image.setInteractive({ cursor: 'pointer'});
         this.image.depth = y + 200;
+        this.image.scale = 0.4;
     }
 
     onPointerDown(pointer: Phaser.Input.Pointer) {
