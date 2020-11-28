@@ -169,6 +169,7 @@ def renderDuck(skin_name):
 
 renderDuck("white")
 renderDuck("mallard")
+renderDuck("brown")
 renderDuck("duckling")
 
 print(f"Render complete. {images_created} images rendered.")

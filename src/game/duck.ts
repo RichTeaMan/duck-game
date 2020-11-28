@@ -37,7 +37,8 @@ const duckAnims = {
 export class DuckType {
     static duckTypes = [
         "white",
-        "mallard"
+        "mallard",
+        "brown"
     ];
 
     static random() {

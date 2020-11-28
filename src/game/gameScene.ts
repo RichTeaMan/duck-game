@@ -24,12 +24,14 @@ export class GameScene extends Phaser.Scene {
         const scene = this as Phaser.Scene;
 
         scene.load.json('pond-map', 'assets/pond.json');
-        scene.load.spritesheet('duck-white', 'assets/duck-white-spritesheet.png', { frameWidth: 512, frameHeight: 512 });
-        scene.load.spritesheet('duck-mallard', 'assets/duck-mallard-spritesheet.png', { frameWidth: 512, frameHeight: 512 });
-        scene.load.spritesheet('duck-duckling', 'assets/duck-duckling-spritesheet.png', { frameWidth: 512, frameHeight: 512 });
         scene.load.spritesheet('landscape-tileset', 'assets/landscape-spritesheet.png', { frameWidth: 132, frameHeight: 100 });
         scene.load.spritesheet('water', 'assets/landscapeTiles_066.png', { frameWidth: 132, frameHeight: 100 });
         scene.load.image('nest', 'assets/nest.png');
+        
+        scene.load.spritesheet('duck-white', 'assets/duck-white-spritesheet.png', { frameWidth: 512, frameHeight: 512 });
+        scene.load.spritesheet('duck-mallard', 'assets/duck-mallard-spritesheet.png', { frameWidth: 512, frameHeight: 512 });
+        scene.load.spritesheet('duck-brown', 'assets/duck-brown-spritesheet.png', { frameWidth: 512, frameHeight: 512 });
+        scene.load.spritesheet('duck-duckling', 'assets/duck-duckling-spritesheet.png', { frameWidth: 512, frameHeight: 512 });
 
         scene.load.image('bread', 'assets/bread_NW.png');
         scene.load.image('breadc', 'assets/bread_cursor.png');
