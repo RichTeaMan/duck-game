@@ -13,6 +13,12 @@ Navigate to installed Blender directory, then into the python/bin directory:
 ./python.exe ../lib/ensurepip
 ./python.exe ../lib/site-packages/pip install pillow --user
 ```
+## Thanks
+
+### Audio
+
+* Many thanks to my friends for offering their quacky voice talents.
+* Duckling noises were extracted from this adorable video: https://www.youtube.com/watch?v=PC9Wyd2sBS0
 
 ## Running render script
 

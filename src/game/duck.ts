@@ -58,6 +58,13 @@ export class Duck extends Entity {
         "quackquack-m1"
     ];
 
+    static CHIRPS = [
+        "chirp1",
+        "chirpchirp1",
+        "chirp2",
+        "chirpchirp2"
+    ];
+
     /**
      * Gets the age in ticks when a duckling should age into a duck.
      */
@@ -113,8 +120,8 @@ export class Duck extends Entity {
 
         this.duckling = duckling;
 
-        this.image.setInteractive({ cursor: 'pointer'});
-        this.image.input.hitArea.setTo(128, 128, 512 - 128, 512 -128);
+        this.image.setInteractive({ cursor: 'pointer' });
+        this.image.input.hitArea.setTo(128, 128, 512 - 128, 512 - 128);
 
         this.duckType = duckType;
         this.motion = 'walk';
@@ -129,8 +136,7 @@ export class Duck extends Entity {
         this.gameState.pointerHandled = true;
         pointer.event.stopImmediatePropagation();
         this.startQuackAnimation();
-        const quackTrack = randomElement(Duck.QUACKS);
-        this.gameState.scene.sound.add(quackTrack).play({ volume: 0.2 });
+        this.quack();
         const thoughts = this.gameState.scene.cache.json.get('duck-thoughts') as Array<string>;
         this.thought = randomElement(thoughts);
         this.gameState.uiScene.displayDuckInfo(this);
@@ -260,6 +266,17 @@ export class Duck extends Entity {
         this.active = true;
     }
 
+    quack() {
+        let quackTrack: string;
+        if (this.duckling) {
+            quackTrack = randomElement(Duck.CHIRPS);
+        }
+        else {
+            quackTrack = randomElement(Duck.QUACKS);
+        }
+        this.gameState.scene.sound.add(quackTrack).play({ volume: 0.2 });
+    }
+
     update() {
         this.age++;
         if (this.duckling && this.age > Duck.DUCKLING_MATURATION_AGE) {
@@ -280,9 +297,7 @@ export class Duck extends Entity {
 
         // 0.05% chance to quack
         if (randomInt(2000) === 1) {
-            const quackTrack = randomElement(Duck.QUACKS);
-            this.gameState.scene.sound.add(quackTrack).play({ volume: 0.2 });
-            console.log(quackTrack);
+            this.quack();
             this.startQuackAnimation();
         }
 

@@ -94,6 +94,7 @@ export class Nest extends Entity {
                 duckling.leaderDuck = leader;
                 this.gameState.addEntity(duckling);
                 leader = duckling;
+                duckling.quack();
                 names.push(duckling.name);
             }
             this.gameState.uiScene.displayToast(`${this.nestingDuck.name} brood has hatched ${names.length} ducklings!`);
