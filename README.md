@@ -1,8 +1,9 @@
-# Virtual Duck Pond
+# Duck Pond-ering
 
-This is a duck pond of a so far unspecified use.
+A pond with some hungry and slightly melancholy ducks. Built for [Untitled Game Jam](https://itch.io/jam/untitled-game-jam-37).
 
-Built for [Untitled Game Jam](https://itch.io/jam/untitled-game-jam-37).
+This game is pond simulator. Ducks swim about, looking for food and nesting opportunities. Calling this game is a bit of a stretch,
+but more of a prototype of an isometric web game with a 3D asset development pipeline.
 
 
 ## Installing Pillow for render script
