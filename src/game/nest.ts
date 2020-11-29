@@ -42,13 +42,17 @@ export class Nest extends Entity {
         }
 
         // choose a random non duckling
-        const ducks = this.gameState.fetchDucks().filter(f => !f.duckling);
+        const ducks = this.gameState.fetchDucks().filter(f => !f.duckling && f.lastNested + Duck.DUCKLING_MATURATION_AGE < this.gameState.ticks);
         if (ducks.length > 0) {
             const duck = randomElement(ducks);
+            console.log(`${duck.lastNested + Duck.DUCKLING_MATURATION_AGE} | ${this.gameState.ticks}`);
             this.nestingDuck = duck;
-            this.gameState.uiScene.displayToast(`${duck.name} is feeling broody`);
+            this.gameState.uiScene.displayToast(`${duck.name} is feeling broody.`);
             this.nestingTime = 0;
             duck.sendToNest(this);
+        }
+        else {
+            this.gameState.uiScene.displayToast(`No ducks are feeling broody.`);
         }
     }
 

@@ -102,6 +102,8 @@ export class Duck extends Entity {
 
     duckling: boolean;
 
+    lastNested = - 10 * Duck.DUCKLING_MATURATION_AGE;
+
     /**
      * Age of the duck in ticks.
      */
@@ -279,6 +281,7 @@ export class Duck extends Entity {
         this.nesting = false;
         this.target = null;
         this.active = true;
+        this.lastNested = this.gameState.ticks;
     }
 
     quack() {

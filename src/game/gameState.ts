@@ -20,6 +20,7 @@ export class GameState {
     cursors: Phaser.Types.Input.Keyboard.CursorKeys;
     entities: Array<Entity> = [];
     waterTiles: Array<Phaser.GameObjects.Image> = [];
+    ticks = 0;
 
     debug = {
         showTargets: false,
@@ -47,6 +48,7 @@ export class GameState {
         });
 
         this.pointerHandled = false;
+        this.ticks++;
     }
 
     pruneEntities() {
