@@ -42,7 +42,7 @@ export class Nest extends Entity {
         }
 
         // choose a random non duckling
-        const ducks = this.gameState.fetchDucks().filter(f => f.duckType !== 'duckling');
+        const ducks = this.gameState.fetchDucks().filter(f => !f.duckling);
         if (ducks.length > 0) {
             const duck = randomElement(ducks);
             this.nestingDuck = duck;
