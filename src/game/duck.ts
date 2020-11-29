@@ -119,12 +119,10 @@ export class Duck extends Entity {
         else {
             this.image.scale = 0.8;
         }
-
-        this.duckling = duckling;
-
         this.image.setInteractive({ cursor: 'pointer' });
         this.image.input.hitArea.setTo(128, 128, 512 - 128, 512 - 128);
 
+        this.duckling = duckling;
         this.duckType = duckType;
         this.motion = 'walk';
         this.anim = duckAnims[this.motion];
@@ -306,6 +304,9 @@ export class Duck extends Entity {
 
             this.image = this.gameState.scene.add.image(this.x, this.y, `duck-${this.duckType}`);
             this.image.scale = 0.8;
+            this.image.setInteractive({ cursor: 'pointer' });
+            this.image.input.hitArea.setTo(128, 128, 512 - 128, 512 - 128);
+            this.setEvents();
 
             this.gameState.uiScene.displayToast(`${this.name} is all grown up.`);
         }

@@ -10,13 +10,16 @@ export abstract class Entity {
     constructor(gameState: GameState, imageName: string, x: number, y: number) {
         this.image = gameState.scene.add.image(x, y, imageName);
         this.gameState = gameState;
+        this.setEvents();
+    }
 
+    abstract entityType(): EntityType;
+
+    setEvents() {
         this.image.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
             this.onPointerDown(pointer)
         });
     }
-
-    abstract entityType(): EntityType;
 
     onPointerDown(pointer: Phaser.Input.Pointer) {
 
