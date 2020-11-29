@@ -92,7 +92,7 @@ export class GameScene extends Phaser.Scene {
         this.scale.on('resize', this.resize, this);
         this.resize({width: this.gameState.scene.cameras.main.width, height: this.gameState.scene.cameras.main.width}, null, null, null);
 
-        this.gameState.scene.sound.add('ambience').play({ volume: 0.1, loop: true });
+        this.gameState.scene.sound.add('ambience').play({ volume: 0.2, loop: true });
     }
 
 
