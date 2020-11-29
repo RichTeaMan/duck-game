@@ -70,7 +70,7 @@ export class Duck extends Entity {
      */
     static DUCKLING_MATURATION_AGE = 30000;
 
-    name = randomElement(["Daisy", "Mavis", "Harold", "Ernest", "Ermintrude", "Annie", "Reginald", "Clarence", "Emmett", "Gert", "Hilda", "Doris", "Hattie"]);
+    name = this.fetchName();
 
     motion: any;
     anim: any;
@@ -137,13 +137,28 @@ export class Duck extends Entity {
         pointer.event.stopImmediatePropagation();
         this.startQuackAnimation();
         this.quack();
-        const thoughts = this.gameState.scene.cache.json.get('duck-thoughts') as Array<string>;
-        this.thought = randomElement(thoughts);
+        this.thought = this.fetchThought();
         this.gameState.uiScene.displayDuckInfo(this);
     }
 
     entityType(): EntityType {
         return EntityType.Duck;
+    }
+
+    fetchName() {
+        const names = this.gameState.scene.cache.json.get('duck-data').duckNames as Array<string>;
+        return randomElement(names);
+    }
+
+    fetchThought() {
+        let thoughts: Array<string>;
+        if (this.duckling) {
+            thoughts = this.gameState.scene.cache.json.get('duck-data').ducklingThoughts as Array<string>;
+        }
+        else {
+            thoughts = this.gameState.scene.cache.json.get('duck-data').duckThoughts as Array<string>;
+        }
+        return randomElement(thoughts);
     }
 
     startWalkAnimation() {
