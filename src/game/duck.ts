@@ -68,7 +68,7 @@ export class Duck extends Entity {
     /**
      * Gets the age in ticks when a duckling should age into a duck.
      */
-    static DUCKLING_MATURATION_AGE = 3000;
+    static DUCKLING_MATURATION_AGE = 30000;
 
     name = randomElement(["Daisy", "Mavis", "Harold", "Ernest", "Ermintrude", "Annie", "Reginald", "Clarence", "Emmett", "Gert", "Hilda", "Doris", "Hattie"]);
 
