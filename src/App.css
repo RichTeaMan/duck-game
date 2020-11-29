@@ -45,3 +45,8 @@
 #footer {
   height: 100px;
 }
+
+h1 {
+  padding: 15px;
+  margin: 0;
+}

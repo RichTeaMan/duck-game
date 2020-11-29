@@ -7,6 +7,7 @@ Game.setupGame();
 const App: React.FC = () => {
   return (
     <div className="App">
+      <h1>Duck Pond-ering</h1>
       <div className="centred-content">
         <div id="game-section">
           <div id="game-container" />
