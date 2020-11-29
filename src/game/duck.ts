@@ -323,7 +323,7 @@ export class Duck extends Entity {
         if (this.leaderDuck != null) {
             const oppDir = this.leaderDuck.direction.opposite;
 
-            const leaderOffset = 90;
+            const leaderOffset = 70;
             const justBehindX = this.leaderDuck.x + leaderOffset * oppDir.x;
             const justBehindY = this.leaderDuck.y + leaderOffset * oppDir.y;
 
