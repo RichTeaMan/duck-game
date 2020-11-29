@@ -241,6 +241,7 @@ export class Duck extends Entity {
         this.target?.destroy();
         this.target = nest;
         this.vector = this.vectorToEntity(nest, 3);
+        this.direction = Direction.determineFromVector(this.vector);
     }
 
     nestingComplete() {
