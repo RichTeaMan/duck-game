@@ -75,7 +75,7 @@ export class GameScene extends Phaser.Scene {
         const x_offset = 4550;
         const y_offset = 2000;
 
-        const startDucks = 7;
+        const startDucks = 3;
         for (let i = 0; i < startDucks; i++) {
             const randomTile = this.gameState.waterTiles[randomInt(this.gameState.waterTiles.length)];
             const randomDuckType = DuckType.random();
