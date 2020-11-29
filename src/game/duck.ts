@@ -68,7 +68,7 @@ export class Duck extends Entity {
     /**
      * Gets the age in ticks when a duckling should age into a duck.
      */
-    static DUCKLING_MATURATION_AGE = 30000;
+    static DUCKLING_MATURATION_AGE = 6000;
 
     name = this.fetchName();
 
