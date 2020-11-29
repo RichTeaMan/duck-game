@@ -38,7 +38,8 @@ export class DuckType {
     static duckTypes = [
         "white",
         "mallard",
-        "brown"
+        "brown",
+        "mandarin"
     ];
 
     static random() {

@@ -31,6 +31,7 @@ export class GameScene extends Phaser.Scene {
         scene.load.spritesheet('duck-white', 'assets/duck-white-spritesheet.png', { frameWidth: 512, frameHeight: 512 });
         scene.load.spritesheet('duck-mallard', 'assets/duck-mallard-spritesheet.png', { frameWidth: 512, frameHeight: 512 });
         scene.load.spritesheet('duck-brown', 'assets/duck-brown-spritesheet.png', { frameWidth: 512, frameHeight: 512 });
+        scene.load.spritesheet('duck-mandarin', 'assets/duck-mandarin-spritesheet.png', { frameWidth: 512, frameHeight: 512 });
         scene.load.spritesheet('duck-duckling', 'assets/duck-duckling-spritesheet.png', { frameWidth: 512, frameHeight: 512 });
 
         scene.load.image('bread', 'assets/bread_NW.png');
