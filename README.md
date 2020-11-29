@@ -19,6 +19,7 @@ Navigate to installed Blender directory, then into the python/bin directory:
 
 * Built using [Phaser 3](https://phaser.io/phaser3).
 * Duck models created in [Blender](https://www.blender.org/).
+* Map created in [Tiled](https://www.mapeditor.org/).
 * Image editing in [Paint.net](https://www.getpaint.net/).
 * Sound editing in [Audacity](https://www.audacityteam.org/).
 
