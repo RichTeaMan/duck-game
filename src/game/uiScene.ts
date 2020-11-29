@@ -130,7 +130,7 @@ export class UiScene extends Phaser.Scene {
                 targets: foodMessage,
                 duration: 2000,
                 alpha: 0
-            })            
+            })
             // identical tween for a delay
             .add({
                 targets: foodMessage,
@@ -170,8 +170,17 @@ export class UiScene extends Phaser.Scene {
             element.destroy();
         });
 
+        let titleMsg: string;
+        if (duck.duckling) {
+            titleMsg = "(a duck in training)";
+        }
+        else {
+            const s = duck.duckType as string;
+            titleMsg = `(the ${s.charAt(0).toUpperCase() + s.slice(1)} duck)`;
+        }
+
         const name = this.addText(duck.name, 4);
-        const title = this.add.text(0, 0, duck.duckling ? "(a duck in training)" : "(the duck)", { fontFamily: FONT_FAMILY, fontSize: '2em', fontStyle: 'italic' });
+        const title = this.add.text(0, 0, titleMsg, { fontFamily: FONT_FAMILY, fontSize: '2em', fontStyle: 'italic' });
         const thought = this.add.text(0, 0, `is thinking about ${duck.thought}`, { fontFamily: FONT_FAMILY, fontSize: '2em', fontStyle: 'italic' });
         name.x = 40;
         name.y = this.cameras.main.height * 0.75;
