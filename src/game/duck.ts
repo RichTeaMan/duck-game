@@ -49,6 +49,15 @@ export class DuckType {
 
 export class Duck extends Entity {
 
+    static QUACKS = [
+        "quack-f1",
+        "quackquack-f1",
+        "quack-f2",
+        "quackquack-f2",
+        "quack-m1",
+        "quackquack-m1"
+    ];
+
     /**
      * Gets the age in ticks when a duckling should age into a duck.
      */
@@ -120,7 +129,8 @@ export class Duck extends Entity {
         this.gameState.pointerHandled = true;
         pointer.event.stopImmediatePropagation();
         this.startQuackAnimation();
-        this.gameState.scene.sound.add('quackquack-f').play({ volume: 0.2 });
+        const quackTrack = randomElement(Duck.QUACKS);
+        this.gameState.scene.sound.add(quackTrack).play({ volume: 0.2 });
         const thoughts = this.gameState.scene.cache.json.get('duck-thoughts') as Array<string>;
         this.thought = randomElement(thoughts);
         this.gameState.uiScene.displayDuckInfo(this);
@@ -270,7 +280,9 @@ export class Duck extends Entity {
 
         // 0.05% chance to quack
         if (randomInt(2000) === 1) {
-            this.gameState.scene.sound.add('quackquack-f').play({ volume: 0.2 })
+            const quackTrack = randomElement(Duck.QUACKS);
+            this.gameState.scene.sound.add(quackTrack).play({ volume: 0.2 });
+            console.log(quackTrack);
             this.startQuackAnimation();
         }
 
