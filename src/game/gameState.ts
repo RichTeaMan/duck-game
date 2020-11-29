@@ -24,10 +24,10 @@ export class GameState {
 
     debug = {
         showTargets: false,
-        showMouseData: true,
-        showResolutionData: true,
-        showUiResolutionData: true,
-        cameraPanning: true,
+        showMouseData: false,
+        showResolutionData: false,
+        showUiResolutionData: false,
+        cameraPanning: false,
     }
 
     pointerHandled = false;
