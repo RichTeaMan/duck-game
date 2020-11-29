@@ -91,6 +91,10 @@ export class UiScene extends Phaser.Scene {
         foodMessage.x = this.findMiddleWidth(foodMessage);
         foodMessage.y = (this.cameras.main.height / 4);
         foodMessage.alpha = 0;
+        const nestMessage = this.addText('Ducks can nest. Press on the nest on the right.', 4);
+        nestMessage.x = this.findMiddleWidth(nestMessage);
+        nestMessage.y = (this.cameras.main.height / 4);
+        nestMessage.alpha = 0;
 
         const timeLine = this.tweens.timeline();
         timeLine.add({
@@ -120,10 +124,30 @@ export class UiScene extends Phaser.Scene {
             })
             .add({
                 targets: foodMessage,
-                duration: 4000
+                duration: 8000
             })
             .add({
                 targets: foodMessage,
+                duration: 2000,
+                alpha: 0
+            })            
+            // identical tween for a delay
+            .add({
+                targets: foodMessage,
+                duration: 2000,
+                alpha: 0
+            })
+            .add({
+                targets: nestMessage,
+                duration: 2000,
+                alpha: 1
+            })
+            .add({
+                targets: nestMessage,
+                duration: 8000
+            })
+            .add({
+                targets: nestMessage,
                 duration: 2000,
                 alpha: 0
             });
@@ -188,7 +212,6 @@ export class UiScene extends Phaser.Scene {
             }
         });
     }
-
 
     private findMiddleWidth(object: { width: number }): number {
         return (this.cameras.main.width / 2) - (object.width / 2);
