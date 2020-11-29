@@ -51,6 +51,8 @@ export class GameScene extends Phaser.Scene {
         scene.load.audio('chirp2', 'assets/chirp2.mp3');
         scene.load.audio('chirpchirp2', 'assets/chirpchirp2.mp3');
 
+        scene.load.audio('ambience', 'assets/ambience.mp3');
+
         scene.load.json('duck-thoughts', 'assets/duck-thoughts.json');
     }
 
@@ -89,6 +91,8 @@ export class GameScene extends Phaser.Scene {
 
         this.scale.on('resize', this.resize, this);
         this.resize({width: this.gameState.scene.cameras.main.width, height: this.gameState.scene.cameras.main.width}, null, null, null);
+
+        this.gameState.scene.sound.add('ambience').play({ volume: 0.1, loop: true });
     }
 
 

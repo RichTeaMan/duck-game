@@ -13,12 +13,24 @@ Navigate to installed Blender directory, then into the python/bin directory:
 ./python.exe ../lib/ensurepip
 ./python.exe ../lib/site-packages/pip install pillow --user
 ```
-## Thanks
+## Credits
+
+### Tools
+
+* Built using [Phaser 3](https://phaser.io/phaser3).
+* Duck models created in [Blender](https://www.blender.org/).
+* Image editing in [Paint.net](https://www.getpaint.net/).
+* Sound editing in [Audacity](https://www.audacityteam.org/).
+
+### Sprites
+
+* Tilesprites from Kenney, [Isometric Landscape](https://www.kenney.nl/assets/isometric-landscape) and the [Food Kit](https://www.kenney.nl/assets/food-kit).
 
 ### Audio
 
 * Many thanks to my friends for offering their quacky voice talents.
-* Duckling noises were extracted from this adorable video: https://www.youtube.com/watch?v=PC9Wyd2sBS0
+* Duckling noises were extracted from this adorable video: https://www.youtube.com/watch?v=PC9Wyd2sBS0.
+* Ambient nature noises courtesy of BurghRecords: https://www.youtube.com/watch?v=sexUXJPljH4.
 
 ## Running render script
 
