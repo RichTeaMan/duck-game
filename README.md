@@ -1,5 +1,7 @@
 # Duck Pond-ering
 
+*Game hosted at https://richteaman.github.io/duck-game/*
+
 A pond with some hungry and slightly melancholy ducks. Built for [Untitled Game Jam](https://itch.io/jam/untitled-game-jam-37).
 
 This game is pond simulator. Ducks swim about, looking for food and nesting opportunities. Calling this game is a bit of a stretch,
