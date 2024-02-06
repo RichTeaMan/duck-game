@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://cwq748la41xae"]
+
+[ext_resource type="PackedScene" uid="uid://dxc2ja01c1fqw" path="res://ducks/duck.tscn" id="1_2amyx"]
+[ext_resource type="Script" path="res://pond.gd" id="1_sww1h"]
+
+[node name="Pond" type="Node3D"]
+script = ExtResource("1_sww1h")
+
+[node name="Duck" parent="." instance=ExtResource("1_2amyx")]
+transform = Transform3D(-0.873475, 0, -0.486869, 0, 1, 0, 0.486869, 0, -0.873475, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.277076, 0.889173)
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.1
+autostart = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.224152, 0.974554, 0, -0.974554, 0.224152, 0, 0, 0)
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
